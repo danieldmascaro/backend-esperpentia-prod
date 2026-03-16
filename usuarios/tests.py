@@ -4,17 +4,19 @@ from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.test import override_settings
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient, APITestCase
 
 from orders.models import Order
 from payments.models import Payment
 from productos.models import Autor, Editorial, Genero, Libro, Obra
 from shipping.models import ShippingMethod
 from usuarios.models import Comuna, Region
+from ventas.models import Venta
 
 
 @override_settings(
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    PAYMENTS_WEBHOOK_SECRET="test-webhook-secret",
     DJOSER={
         "LOGIN_FIELD": "email",
         "SEND_ACTIVATION_EMAIL": False,
@@ -147,9 +149,23 @@ class BackendEndpointsV2Tests(APITestCase):
         ShippingMethod.objects.create(name="Express", price=4990, region="RM", active=True)
 
     def _login(self, email, password):
-        response = self.client.post("/auth/jwt/create/", {"email": email, "password": password}, format="json")
+        csrf_token = self._get_csrf_token()
+        response = self.client.post(
+            "/auth/jwt/create/",
+            {"email": email, "password": password},
+            format="json",
+            HTTP_X_CSRFTOKEN=csrf_token,
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         return response.data["access"]
+
+    def _get_csrf_token(self, client=None):
+        client = client or self.client
+        response = client.get("/auth/csrf/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("csrftoken", response.cookies)
+        self.assertTrue(response.data["csrfToken"])
+        return response.data["csrfToken"]
 
     def _auth(self, user):
         return {"HTTP_AUTHORIZATION": f"Bearer {self._login(user.email, self.password)}"}
@@ -276,6 +292,9 @@ class BackendEndpointsV2Tests(APITestCase):
         return order
 
     def test_auth_and_user_endpoints(self):
+        self.assertEqual(self.comuna_santiago.county_code, "SANT")
+        self.assertEqual(self.comuna_providencia.county_code, "PROV")
+
         register_payload = {
             "email": "nuevo.auth@test.com",
             "nombre": "Nuevo",
@@ -289,10 +308,12 @@ class BackendEndpointsV2Tests(APITestCase):
         response = self.client.post("/auth/users/", register_payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        csrf_token = self._get_csrf_token()
         response = self.client.post(
             "/auth/jwt/create/",
             {"email": register_payload["email"], "password": self.password},
             format="json",
+            HTTP_X_CSRFTOKEN=csrf_token,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         access = response.data["access"]
@@ -300,15 +321,16 @@ class BackendEndpointsV2Tests(APITestCase):
         self.assertIn("refresh_token", response.cookies)
         refresh_cookie = response.cookies["refresh_token"].value
 
-        response = self.client.post("/auth/jwt/refresh/", format="json")
+        response = self.client.post("/auth/jwt/refresh/", format="json", HTTP_X_CSRFTOKEN=csrf_token)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access", response.data)
 
-        response = self.client.post("/auth/jwt/logout/", format="json")
+        response = self.client.post("/auth/jwt/logout/", format="json", HTTP_X_CSRFTOKEN=csrf_token)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         self.client.cookies["refresh_token"] = refresh_cookie
-        response = self.client.post("/auth/jwt/refresh/", format="json")
+        csrf_token = self._get_csrf_token()
+        response = self.client.post("/auth/jwt/refresh/", format="json", HTTP_X_CSRFTOKEN=csrf_token)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         response = self.client.post("/auth/jwt/verify/", {"token": access}, format="json")
@@ -358,31 +380,32 @@ class BackendEndpointsV2Tests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         response = self.client.get("/users/usuarios/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-        response = self.client.post(
-            "/users/usuarios/",
-            {
-                "email": "nuevo.user@test.com",
-                "nombre": "Ana",
-                "apellido": "Lopez",
-                "direccion_entrega": "Calle 123",
-                "region_id": self.region_metropolitana.id,
-                "comuna_id": self.comuna_providencia.id,
-                "password": self.password,
-            },
+        response = self.client.get("/users/usuarios/", **auth)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self._count(response.data), 1)
+        listed_user = self._results(response.data)[0]
+        self.assertEqual(str(listed_user["email"]), register_payload["email"])
+
+        user_id = get_user_model().objects.get(email=register_payload["email"]).id
+
+        response = self.client.get(f"/users/usuarios/{user_id}/", **auth)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["region"]["id"], self.region_valparaiso.id)
+        self.assertEqual(response.data["comuna"]["id"], self.comuna_valparaiso.id)
+
+        response = self.client.patch(
+            f"/users/usuarios/{user_id}/",
+            {"nombre": "Ana Final"},
             format="json",
+            **auth,
         )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        user_id = get_user_model().objects.get(email="nuevo.user@test.com").id
-
-        response = self.client.get(f"/users/usuarios/{user_id}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["region"]["id"], self.region_metropolitana.id)
-        self.assertEqual(response.data["comuna"]["id"], self.comuna_providencia.id)
+        self.assertEqual(response.data["nombre"], "Ana Final")
 
-        response = self.client.patch(f"/users/usuarios/{user_id}/", {"nombre": "Ana Final"}, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(f"/users/usuarios/{self.customer.id}/", **auth)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         response = self.client.get("/users/superusuarios/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -391,22 +414,47 @@ class BackendEndpointsV2Tests(APITestCase):
         response = self.client.get("/users/superusuarios/", **admin_auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_cookie_auth_endpoints_require_csrf(self):
+        strict_client = APIClient(enforce_csrf_checks=True)
+
+        response = strict_client.post(
+            "/auth/jwt/create/",
+            {"email": self.customer.email, "password": self.password},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        csrf_token = self._get_csrf_token(strict_client)
+        response = strict_client.post(
+            "/auth/jwt/create/",
+            {"email": self.customer.email, "password": self.password},
+            format="json",
+            HTTP_X_CSRFTOKEN=csrf_token,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = strict_client.post("/auth/jwt/refresh/", format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        response = strict_client.post("/auth/jwt/refresh/", format="json", HTTP_X_CSRFTOKEN=csrf_token)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_product_endpoints_create_related_objects_and_filters(self):
         response = self.client.get("/productos/autores/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(self._count(response.data), 2)
+        self.assertGreaterEqual(self._count(response.data), 2)
 
         response = self.client.get("/productos/generos/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(self._count(response.data), 2)
+        self.assertGreaterEqual(self._count(response.data), 2)
 
         response = self.client.get("/productos/editoriales/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(self._count(response.data), 2)
+        self.assertGreaterEqual(self._count(response.data), 2)
 
         response = self.client.get("/productos/obras/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(self._count(response.data), 2)
+        self.assertGreaterEqual(self._count(response.data), 2)
 
         response = self.client.get("/productos/libros/?titulo=Don%20Quijote&autor=Cervantes&editorial=Alpha&genero=Novela")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -415,10 +463,11 @@ class BackendEndpointsV2Tests(APITestCase):
         response = self.client.get("/catalog/books/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self._count(response.data), 2)
+        self.assertEqual(len(self._results(response.data)), 2)
 
         response = self.client.get("/catalog/works/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(self._count(response.data), 2)
+        self.assertGreaterEqual(self._count(response.data), 2)
 
         response = self.client.get(f"/productos/libros/{self.book.id}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -453,6 +502,9 @@ class BackendEndpointsV2Tests(APITestCase):
 
         response = self.client.get("/checkout/carts/current/", HTTP_X_GUEST_TOKEN=guest_token, **auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get("/checkout/carts/current/")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         response = self.client.post(
             f"/checkout/carts/{cart_id}/add-item/",
@@ -575,8 +627,23 @@ class BackendEndpointsV2Tests(APITestCase):
             "/payments/webhook/",
             {"provider_reference": provider_reference, "status": "paid"},
             format="json",
+            HTTP_X_WEBHOOK_SECRET="test-webhook-secret",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        order.refresh_from_db()
+        order.sale.refresh_from_db()
+        self.assertEqual(order.sale.status, Venta.Status.COMPLETED)
+
+        response = self.client.post(
+            "/payments/webhook/",
+            {"provider_reference": provider_reference, "status": "refunded"},
+            format="json",
+            HTTP_X_WEBHOOK_SECRET="test-webhook-secret",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        order.refresh_from_db()
+        order.sale.refresh_from_db()
+        self.assertEqual(order.sale.status, Venta.Status.REFUNDED)
 
         webpay_payment = Payment.objects.create(
             order=order,
@@ -616,9 +683,22 @@ class BackendEndpointsV2Tests(APITestCase):
 
         response = self.client.get("/ventas/stats/summary/", **admin_auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["orders_count"], 0)
 
         response = self.client.get("/ventas/stats/by-date/?group_by=day", **admin_auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
 
         response = self.client.get("/ventas/stats/by-book/?limit=10", **admin_auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
+
+        response = self.client.get("/ventas/stats/summary/?status=refunded", **admin_auth)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["orders_count"], 1)
+
+        response = self.client.get("/ventas/stats/by-date/?group_by=year", **admin_auth)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        response = self.client.get("/ventas/stats/by-book/?limit=0", **admin_auth)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

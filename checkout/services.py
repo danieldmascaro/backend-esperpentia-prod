@@ -6,13 +6,17 @@ from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
 
-from inventory.services import consume_reserved_stock, release_stock, reserve_stock
+from inventory.services import assert_stock_available, consume_reserved_stock, reserve_stock
 from orders.services import create_order_from_sale
 from productos.models import Libro
 from ventas.services import create_sale_from_cart
-from .models import Cart, CartDiscount, CartItem, CartOperationLog, CartTaxLine
+from .models import Cart, CartDiscount, CartItem, CartOperationLog, CartTaxLine, default_cart_expiry
 
 CLP_UNIT = Decimal("1")
+
+
+class CheckoutError(Exception):
+    pass
 
 
 def quantize(value: Decimal) -> Decimal:
@@ -37,6 +41,14 @@ def get_or_create_cart(user=None, guest_token=None, currency="CLP") -> Cart:
         defaults={"currency": currency},
     )
     return cart
+
+
+def get_current_cart(user=None, guest_token=None):
+    if user and user.is_authenticated:
+        return Cart.objects.filter(user=user, status=Cart.Status.ACTIVE).first()
+    if not guest_token:
+        return None
+    return Cart.objects.filter(guest_token=guest_token, status=Cart.Status.ACTIVE).first()
 
 
 def _get_book_unit_price(book: Libro) -> Decimal:
@@ -66,34 +78,58 @@ def calculate_cart_totals(cart: Cart) -> Cart:
     tax_rate = Decimal(str(getattr(settings, "CHECKOUT_TAX_RATE", "0.19")))
     tax_amount = quantize(taxable_base * tax_rate) if apply_tax else Decimal("0")
 
-    if apply_tax:
-        CartTaxLine.objects.update_or_create(
-            cart=cart,
-            name="IVA",
-            defaults={
-                "rate": tax_rate,
-                "taxable_base": quantize(taxable_base),
-                "amount": tax_amount,
-            },
-        )
-    else:
-        cart.tax_lines.all().delete()
+    line_changed = False
+    quantized_subtotal = quantize(items_subtotal)
+    quantized_discount = quantize(discount_amount)
+    quantized_total = quantize(quantized_subtotal - quantized_discount + tax_amount)
 
-    cart.subtotal_amount = quantize(items_subtotal)
-    cart.discount_amount = quantize(discount_amount)
-    cart.tax_amount = tax_amount
-    cart.total_amount = quantize(cart.subtotal_amount - cart.discount_amount + cart.tax_amount)
-    cart.version += 1
-    cart.save(
-        update_fields=[
-            "subtotal_amount",
-            "discount_amount",
-            "tax_amount",
-            "total_amount",
-            "version",
-            "updated_at",
-        ]
-    )
+    if apply_tax:
+        tax_line = cart.tax_lines.filter(name="IVA").first()
+        desired_line = {
+            "rate": tax_rate,
+            "taxable_base": quantize(taxable_base),
+            "amount": tax_amount,
+        }
+        if not tax_line:
+            CartTaxLine.objects.create(cart=cart, name="IVA", **desired_line)
+            line_changed = True
+        else:
+            dirty_fields = [
+                field_name for field_name, expected_value in desired_line.items()
+                if getattr(tax_line, field_name) != expected_value
+            ]
+            if dirty_fields:
+                for field_name, expected_value in desired_line.items():
+                    setattr(tax_line, field_name, expected_value)
+                tax_line.save(update_fields=[*dirty_fields, "updated_at"])
+                line_changed = True
+    else:
+        deleted, _ = cart.tax_lines.all().delete()
+        line_changed = deleted > 0
+
+    totals_changed = any([
+        cart.subtotal_amount != quantized_subtotal,
+        cart.discount_amount != quantized_discount,
+        cart.tax_amount != tax_amount,
+        cart.total_amount != quantized_total,
+    ])
+
+    if totals_changed or line_changed:
+        cart.subtotal_amount = quantized_subtotal
+        cart.discount_amount = quantized_discount
+        cart.tax_amount = tax_amount
+        cart.total_amount = quantized_total
+        cart.version += 1
+        cart.save(
+            update_fields=[
+                "subtotal_amount",
+                "discount_amount",
+                "tax_amount",
+                "total_amount",
+                "version",
+                "updated_at",
+            ]
+        )
     return cart
 
 
@@ -102,6 +138,10 @@ def add_item_to_cart(cart_id, book_id, quantity) -> Cart:
     cart = Cart.objects.select_for_update().get(pk=cart_id, status=Cart.Status.ACTIVE)
     book = Libro.objects.select_related("obra__autor", "obra__genero", "editorial").get(pk=book_id, activo=True)
     unit_price = _get_book_unit_price(book)
+
+    existing_item = CartItem.objects.filter(cart=cart, book=book).only("id", "quantity", "unit_price_snapshot").first()
+    next_quantity = quantity if not existing_item else existing_item.quantity + quantity
+    assert_stock_available(book, next_quantity)
 
     item, created = CartItem.objects.get_or_create(
         cart=cart,
@@ -114,12 +154,9 @@ def add_item_to_cart(cart_id, book_id, quantity) -> Cart:
         },
     )
     if not created:
-        reserve_stock(book, quantity)
         item.quantity += quantity
         item.subtotal = quantize(item.unit_price_snapshot * item.quantity)
         item.save(update_fields=["quantity", "subtotal", "updated_at"])
-    else:
-        reserve_stock(book, quantity)
 
     return calculate_cart_totals(cart)
 
@@ -127,13 +164,8 @@ def add_item_to_cart(cart_id, book_id, quantity) -> Cart:
 @transaction.atomic
 def update_cart_item(cart_id, item_id, quantity) -> Cart:
     cart = Cart.objects.select_for_update().get(pk=cart_id, status=Cart.Status.ACTIVE)
-    item = CartItem.objects.get(pk=item_id, cart=cart)
-    previous_quantity = item.quantity
-    delta = quantity - previous_quantity
-    if delta > 0:
-        reserve_stock(item.book, delta)
-    elif delta < 0:
-        release_stock(item.book, abs(delta))
+    item = CartItem.objects.select_related("book").get(pk=item_id, cart=cart)
+    assert_stock_available(item.book, quantity)
     item.quantity = quantity
     item.subtotal = quantize(item.unit_price_snapshot * quantity)
     item.save(update_fields=["quantity", "subtotal", "updated_at"])
@@ -143,9 +175,8 @@ def update_cart_item(cart_id, item_id, quantity) -> Cart:
 @transaction.atomic
 def remove_cart_item(cart_id, item_id) -> Cart:
     cart = Cart.objects.select_for_update().get(pk=cart_id, status=Cart.Status.ACTIVE)
-    item = CartItem.objects.filter(pk=item_id, cart=cart).select_related("book").first()
+    item = CartItem.objects.filter(pk=item_id, cart=cart).first()
     if item:
-        release_stock(item.book, item.quantity)
         item.delete()
     return calculate_cart_totals(cart)
 
@@ -159,7 +190,11 @@ def apply_discount(cart_id, discount_type, value=Decimal("0"), code="", metadata
 
     amount = Decimal("0")
     value = Decimal(value)
+    if value < 0:
+        raise CheckoutError("El valor del descuento no puede ser negativo.")
     if discount_type == CartDiscount.Type.PERCENT:
+        if value > 100:
+            raise CheckoutError("El descuento porcentual no puede ser mayor a 100.")
         amount = quantize(subtotal * (value / Decimal("100")))
     elif discount_type == CartDiscount.Type.FIXED:
         amount = min(quantize(value), subtotal)
@@ -191,8 +226,11 @@ def convert_cart_to_order(cart_id):
     cart = Cart.objects.select_for_update().prefetch_related("items", "discounts", "tax_lines").get(
         pk=cart_id, status=Cart.Status.ACTIVE
     )
+    if not cart.items.exists():
+        raise CheckoutError("No se puede convertir un carrito vacio.")
     calculate_cart_totals(cart)
     for item in cart.items.select_related("book"):
+        reserve_stock(item.book, item.quantity)
         consume_reserved_stock(item.book, item.quantity)
 
     sale = create_sale_from_cart(cart)
@@ -223,5 +261,8 @@ def store_idempotent_payload(cart, operation, idempotency_key, payload):
         cart=cart,
         operation=operation,
         idempotency_key=idempotency_key,
-        defaults={"response_payload": payload},
+        defaults={
+            "response_payload": payload,
+            "expires_at": default_cart_expiry(),
+        },
     )

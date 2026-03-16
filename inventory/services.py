@@ -16,6 +16,14 @@ def get_or_create_inventory_item(book):
     return inventory_item
 
 
+def assert_stock_available(book, quantity):
+    inventory_item = get_or_create_inventory_item(book)
+    available = inventory_item.stock - inventory_item.reserved_stock
+    if quantity > available:
+        raise InventoryError("Stock insuficiente para el libro seleccionado.")
+    return inventory_item
+
+
 @transaction.atomic
 def reserve_stock(book, quantity):
     inventory_item = get_or_create_inventory_item(book)

@@ -2,8 +2,10 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import ValidationError
+from rest_framework.settings import api_settings
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 
 from inventory.services import InventoryError
 from .models import Cart
@@ -15,11 +17,13 @@ from .serializers import (
     UpdateCartItemSerializer,
 )
 from .services import (
+    CheckoutError,
     add_item_to_cart,
     apply_discount,
     calculate_cart_totals,
     convert_cart_to_order,
     get_idempotent_payload,
+    get_current_cart,
     get_or_create_cart,
     remove_cart_item,
     store_idempotent_payload,
@@ -32,12 +36,31 @@ class CartViewSet(viewsets.GenericViewSet):
     serializer_class = CartSerializer
     permission_classes = [AllowAny]
 
+    def get_throttles(self):
+        throttle_classes = list(api_settings.DEFAULT_THROTTLE_CLASSES)
+        if self.action == "current":
+            self.throttle_scope = "checkout_read"
+            throttle_classes.append(ScopedRateThrottle)
+        elif self.action in {"resolve", "add_item", "update_item", "remove_item", "apply_discount", "recalculate", "convert"}:
+            self.throttle_scope = "checkout_write"
+            throttle_classes.append(ScopedRateThrottle)
+        return [throttle() for throttle in throttle_classes]
+
     def _get_guest_token(self, request):
+        body_token = None
+        if request.method != "GET":
+            body_token = request.data.get("guest_token")
         return (
             request.headers.get("X-Guest-Token")
             or request.query_params.get("guest_token")
-            or request.data.get("guest_token")
+            or body_token
         )
+
+    def _get_idempotency_key(self, request):
+        value = request.headers.get("Idempotency-Key")
+        if value and len(value) > 128:
+            raise ValidationError({"detail": "Idempotency-Key excede el maximo de 128 caracteres."})
+        return value
 
     def _assert_cart_access(self, request, cart):
         if request.user.is_authenticated and cart.user_id == request.user.id:
@@ -64,10 +87,12 @@ class CartViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=["get"], url_path="current")
     def current(self, request):
-        cart = get_or_create_cart(
+        cart = get_current_cart(
             user=request.user if request.user.is_authenticated else None,
             guest_token=self._get_guest_token(request),
         )
+        if not cart:
+            return Response({"detail": "No existe un carrito activo."}, status=status.HTTP_404_NOT_FOUND)
         calculate_cart_totals(cart)
         return Response(CartSerializer(cart).data)
 
@@ -75,7 +100,7 @@ class CartViewSet(viewsets.GenericViewSet):
     def add_item(self, request, pk=None):
         cart = self.get_object()
         self._assert_cart_access(request, cart)
-        idempotency_key = request.headers.get("Idempotency-Key")
+        idempotency_key = self._get_idempotency_key(request)
         cached = get_idempotent_payload(cart, "add_item", idempotency_key)
         if cached:
             return Response(cached)
@@ -85,7 +110,7 @@ class CartViewSet(viewsets.GenericViewSet):
         data = serializer.validated_data
         try:
             cart = add_item_to_cart(cart.id, data["book_id"], data["quantity"])
-        except InventoryError as exc:
+        except (CheckoutError, InventoryError) as exc:
             raise ValidationError({"detail": str(exc)})
         payload = CartSerializer(cart).data
         store_idempotent_payload(cart, "add_item", idempotency_key, payload)
@@ -95,7 +120,7 @@ class CartViewSet(viewsets.GenericViewSet):
     def update_item(self, request, pk=None, item_id=None):
         cart = self.get_object()
         self._assert_cart_access(request, cart)
-        idempotency_key = request.headers.get("Idempotency-Key")
+        idempotency_key = self._get_idempotency_key(request)
         cached = get_idempotent_payload(cart, "update_item", idempotency_key)
         if cached:
             return Response(cached)
@@ -104,7 +129,7 @@ class CartViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         try:
             cart = update_cart_item(cart.id, item_id, serializer.validated_data["quantity"])
-        except InventoryError as exc:
+        except (CheckoutError, InventoryError) as exc:
             raise ValidationError({"detail": str(exc)})
         payload = CartSerializer(cart).data
         store_idempotent_payload(cart, "update_item", idempotency_key, payload)
@@ -114,7 +139,7 @@ class CartViewSet(viewsets.GenericViewSet):
     def remove_item(self, request, pk=None, item_id=None):
         cart = self.get_object()
         self._assert_cart_access(request, cart)
-        idempotency_key = request.headers.get("Idempotency-Key")
+        idempotency_key = self._get_idempotency_key(request)
         cached = get_idempotent_payload(cart, "remove_item", idempotency_key)
         if cached:
             return Response(cached)
@@ -128,7 +153,7 @@ class CartViewSet(viewsets.GenericViewSet):
     def apply_discount(self, request, pk=None):
         cart = self.get_object()
         self._assert_cart_access(request, cart)
-        idempotency_key = request.headers.get("Idempotency-Key")
+        idempotency_key = self._get_idempotency_key(request)
         cached = get_idempotent_payload(cart, "apply_discount", idempotency_key)
         if cached:
             return Response(cached)
@@ -158,8 +183,14 @@ class CartViewSet(viewsets.GenericViewSet):
     def convert(self, request, pk=None):
         cart = self.get_object()
         self._assert_cart_access(request, cart)
+        idempotency_key = self._get_idempotency_key(request)
+        cached = get_idempotent_payload(cart, "convert", idempotency_key)
+        if cached:
+            return Response(cached)
         try:
             cart = convert_cart_to_order(cart.id)
-        except InventoryError as exc:
+        except (CheckoutError, InventoryError) as exc:
             raise ValidationError({"detail": str(exc)})
-        return Response(CartSerializer(cart).data, status=status.HTTP_200_OK)
+        payload = CartSerializer(cart).data
+        store_idempotent_payload(cart, "convert", idempotency_key, payload)
+        return Response(payload, status=status.HTTP_200_OK)

@@ -18,13 +18,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from usuarios.auth_views import CookieLogoutView, CookieTokenObtainPairView, CookieTokenRefreshView
+from django.views.static import serve
+from usuarios.auth_views import CsrfCookieView, CookieLogoutView, CookieTokenObtainPairView, CookieTokenRefreshView
 from usuarios.views import activate_user_from_link
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('activate/<uid>/<token>', activate_user_from_link, name='users-activate-link'),
     path('activate/<uid>/<token>/', activate_user_from_link, name='users-activate-link-slash'),
+    path('auth/csrf/', CsrfCookieView.as_view(), name='auth-csrf'),
     path('auth/jwt/create/', CookieTokenObtainPairView.as_view(), name='jwt-create'),
     path('auth/jwt/refresh/', CookieTokenRefreshView.as_view(), name='jwt-refresh'),
     path('auth/jwt/logout/', CookieLogoutView.as_view(), name='jwt-logout'),
@@ -41,5 +43,8 @@ urlpatterns = [
     path('ventas/', include('ventas.urls')),
 ]
 
-if settings.DEBUG:
+if not settings.IS_PRODUCTION:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += [
+        path("media/<path:path>", serve, {"document_root": settings.MEDIA_ROOT}),
+    ]

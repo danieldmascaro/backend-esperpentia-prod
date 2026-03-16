@@ -46,6 +46,7 @@ Durante la ejecucion de tests tambien se crean via API:
 Desde `backend/`:
 
 ```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe manage.py test
 ```
 

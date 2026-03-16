@@ -2,6 +2,8 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from orders.models import Order
@@ -25,6 +27,8 @@ from .services import (
 
 class PaymentCreateIntentAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes = [*api_settings.DEFAULT_THROTTLE_CLASSES, ScopedRateThrottle]
+    throttle_scope = "payments_user"
 
     def post(self, request):
         serializer = CreatePaymentIntentSerializer(data=request.data)
@@ -48,9 +52,13 @@ class PaymentCreateIntentAPIView(APIView):
 
 class PaymentWebhookAPIView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [*api_settings.DEFAULT_THROTTLE_CLASSES, ScopedRateThrottle]
+    throttle_scope = "payments_webhook_public"
 
     def post(self, request):
         secret = getattr(settings, "PAYMENTS_WEBHOOK_SECRET", "")
+        if not secret:
+            return Response({"detail": "Webhook no configurado."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         if secret:
             provided = request.headers.get("X-Webhook-Secret", "")
             if provided != secret:
@@ -67,6 +75,8 @@ class PaymentWebhookAPIView(APIView):
 
 class WebpayCommitAPIView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [*api_settings.DEFAULT_THROTTLE_CLASSES, ScopedRateThrottle]
+    throttle_scope = "payments_commit_public"
 
     def post(self, request):
         serializer = WebpayCommitSerializer(data=request.data)
@@ -87,6 +97,8 @@ class WebpayCommitAPIView(APIView):
 
 class WebpayStatusAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes = [*api_settings.DEFAULT_THROTTLE_CLASSES, ScopedRateThrottle]
+    throttle_scope = "payments_user"
 
     def get(self, request):
         token = request.query_params.get("token_ws")
@@ -101,6 +113,8 @@ class WebpayStatusAPIView(APIView):
 
 class WebpayRefundAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes = [*api_settings.DEFAULT_THROTTLE_CLASSES, ScopedRateThrottle]
+    throttle_scope = "payments_user"
 
     def post(self, request):
         serializer = WebpayRefundSerializer(data=request.data)

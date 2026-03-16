@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
+from ventas.services import sync_sale_status_from_order
 from .models import Order
 from .serializers import OrderSerializer, OrderStatusUpdateSerializer
 
@@ -49,4 +50,5 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
         order.status = serializer.validated_data["status"]
         order.save(update_fields=["status", "updated_at"])
+        sync_sale_status_from_order(order)
         return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)

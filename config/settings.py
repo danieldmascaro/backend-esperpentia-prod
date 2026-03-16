@@ -16,6 +16,8 @@ from pathlib import Path
 
 import dj_database_url
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,13 +28,12 @@ load_dotenv(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "django-insecure-$@wldffpm4$ppt4ap5hm_b&s-py8m3$s)09%4@7g-c!frfb=m9",
-)
+_DEFAULT_SECRET_KEY = "django-insecure-$@wldffpm4$ppt4ap5hm_b&s-py8m3$s)09%4@7g-c!frfb=m9"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", _DEFAULT_SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
+IS_PRODUCTION = os.getenv("DJANGO_ENV", "development").strip().lower() == "production"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
@@ -165,13 +166,37 @@ _csrf_trusted_origins = os.getenv("CSRF_TRUSTED_ORIGINS", "")
 if _csrf_trusted_origins:
     CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_trusted_origins.split(",") if origin.strip()]
 
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "idempotency-key",
+    "x-guest-token",
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': os.getenv("DRF_THROTTLE_ANON", "60/min"),
+        'user': os.getenv("DRF_THROTTLE_USER", "300/min"),
+        'auth_login': os.getenv("DRF_THROTTLE_AUTH_LOGIN", "10/min"),
+        'auth_refresh': os.getenv("DRF_THROTTLE_AUTH_REFRESH", "30/min"),
+        'auth_logout': os.getenv("DRF_THROTTLE_AUTH_LOGOUT", "30/min"),
+        'auth_csrf': os.getenv("DRF_THROTTLE_AUTH_CSRF", "120/min"),
+        'catalog_public': os.getenv("DRF_THROTTLE_CATALOG_PUBLIC", "60/min"),
+        'checkout_read': os.getenv("DRF_THROTTLE_CHECKOUT_READ", "30/min"),
+        'checkout_write': os.getenv("DRF_THROTTLE_CHECKOUT_WRITE", "20/min"),
+        'payments_user': os.getenv("DRF_THROTTLE_PAYMENTS_USER", "20/min"),
+        'payments_commit_public': os.getenv("DRF_THROTTLE_PAYMENTS_COMMIT_PUBLIC", "10/min"),
+        'payments_webhook_public': os.getenv("DRF_THROTTLE_PAYMENTS_WEBHOOK_PUBLIC", "30/min"),
+    },
 }
 
 SIMPLE_JWT = {
@@ -188,7 +213,7 @@ SIMPLE_JWT = {
 AUTH_REFRESH_COOKIE_NAME = os.getenv("AUTH_REFRESH_COOKIE_NAME", "refresh_token")
 AUTH_REFRESH_COOKIE_SECURE = os.getenv(
     "AUTH_REFRESH_COOKIE_SECURE",
-    "false" if DEBUG else "true",
+    "true" if IS_PRODUCTION else "false",
 ).lower() == "true"
 AUTH_REFRESH_COOKIE_SAMESITE = os.getenv("AUTH_REFRESH_COOKIE_SAMESITE", "Lax")
 AUTH_REFRESH_COOKIE_PATH = os.getenv("AUTH_REFRESH_COOKIE_PATH", "/auth/jwt/")
@@ -197,8 +222,34 @@ CHECKOUT_APPLY_TAX = os.getenv("CHECKOUT_APPLY_TAX", "True").lower() == "true"
 CHECKOUT_TAX_RATE = os.getenv("CHECKOUT_TAX_RATE", "0.19")
 WEBPAY_COMMERCE_CODE = os.getenv("WEBPAY_COMMERCE_CODE", "597055555532")
 WEBPAY_API_KEY = os.getenv("WEBPAY_API_KEY", "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C")
+WEBPAY_ENVIRONMENT = os.getenv("WEBPAY_ENVIRONMENT", "").strip().upper()
 WEBPAY_RETURN_URL = os.getenv("WEBPAY_RETURN_URL", "http://localhost:8000/payments/webpay/commit/")
 PAYMENTS_WEBHOOK_SECRET = os.getenv("PAYMENTS_WEBHOOK_SECRET", "")
+
+if IS_PRODUCTION and SECRET_KEY == _DEFAULT_SECRET_KEY:
+    raise ImproperlyConfigured("DJANGO_SECRET_KEY debe configurarse en produccion.")
+
+_default_webpay_code = "597055555532"
+_default_webpay_key = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"
+if IS_PRODUCTION and (
+    WEBPAY_COMMERCE_CODE == _default_webpay_code or WEBPAY_API_KEY == _default_webpay_key
+):
+    raise ImproperlyConfigured("Las credenciales de Webpay deben configurarse en produccion.")
+
+if IS_PRODUCTION and not PAYMENTS_WEBHOOK_SECRET:
+    raise ImproperlyConfigured("PAYMENTS_WEBHOOK_SECRET debe configurarse en produccion.")
+
+CSRF_COOKIE_SECURE = IS_PRODUCTION
+SESSION_COOKIE_SECURE = IS_PRODUCTION
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
+
+if IS_PRODUCTION:
+    SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")

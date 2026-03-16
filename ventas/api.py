@@ -30,10 +30,30 @@ class VentaViewSet(viewsets.ReadOnlyModelViewSet):
         except ValueError as exc:
             raise ValidationError({"detail": f"Formato de fecha invalido: {exc}"})
 
+    def _extract_status(self):
+        status_value = self.request.query_params.get("status", Venta.Status.COMPLETED)
+        valid_statuses = {choice for choice, _ in Venta.Status.choices}
+        if status_value not in valid_statuses:
+            raise ValidationError({"detail": "status invalido."})
+        return status_value
+
+    def _extract_currency(self):
+        currency = self.request.query_params.get("currency")
+        if not currency:
+            return None
+        if len(currency) != 3:
+            raise ValidationError({"detail": "currency debe tener 3 caracteres."})
+        return currency.upper()
+
     @action(detail=False, methods=["get"], url_path="stats/summary")
     def stats_summary(self, request):
         date_from, date_to = self._extract_dates()
-        data = get_sales_summary(date_from=date_from, date_to=date_to)
+        data = get_sales_summary(
+            date_from=date_from,
+            date_to=date_to,
+            status_value=self._extract_status(),
+            currency=self._extract_currency(),
+        )
         return Response(data)
 
     @action(detail=False, methods=["get"], url_path="stats/by-date")
@@ -41,8 +61,14 @@ class VentaViewSet(viewsets.ReadOnlyModelViewSet):
         date_from, date_to = self._extract_dates()
         group_by = request.query_params.get("group_by", "day")
         if group_by not in {"day", "month"}:
-            group_by = "day"
-        data = get_sales_by_date(date_from=date_from, date_to=date_to, group_by=group_by)
+            raise ValidationError({"detail": "group_by debe ser 'day' o 'month'."})
+        data = get_sales_by_date(
+            date_from=date_from,
+            date_to=date_to,
+            group_by=group_by,
+            status_value=self._extract_status(),
+            currency=self._extract_currency(),
+        )
         return Response(data)
 
     @action(detail=False, methods=["get"], url_path="stats/by-book")
@@ -52,5 +78,13 @@ class VentaViewSet(viewsets.ReadOnlyModelViewSet):
             limit = int(request.query_params.get("limit", 20))
         except ValueError:
             raise ValidationError({"detail": "limit debe ser un entero."})
-        data = get_sales_by_book(date_from=date_from, date_to=date_to, limit=limit)
+        if limit <= 0 or limit > 100:
+            raise ValidationError({"detail": "limit debe estar entre 1 y 100."})
+        data = get_sales_by_book(
+            date_from=date_from,
+            date_to=date_to,
+            limit=limit,
+            status_value=self._extract_status(),
+            currency=self._extract_currency(),
+        )
         return Response(data)

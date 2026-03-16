@@ -1,6 +1,9 @@
+from rest_framework.settings import api_settings
 from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.viewsets import ModelViewSet
 
+from config.pagination import StandardResultsSetPagination
 from .filters import LibroFilter
 from .models import Autor, Editorial, Genero, Libro, Obra
 from .serializers import (
@@ -14,11 +17,19 @@ from .serializers import (
 
 class PublicReadAdminWriteViewSet(ModelViewSet):
     permission_classes = [AllowAny]
+    pagination_class = StandardResultsSetPagination
 
     def get_permissions(self):
         if self.request.method in {"POST", "PUT", "PATCH", "DELETE"}:
             return [IsAdminUser()]
         return [AllowAny()]
+
+    def get_throttles(self):
+        throttle_classes = list(api_settings.DEFAULT_THROTTLE_CLASSES)
+        if self.request.method in {"GET", "HEAD", "OPTIONS"}:
+            self.throttle_scope = "catalog_public"
+            throttle_classes.append(ScopedRateThrottle)
+        return [throttle() for throttle in throttle_classes]
 
 
 class AutorViewSet(PublicReadAdminWriteViewSet):

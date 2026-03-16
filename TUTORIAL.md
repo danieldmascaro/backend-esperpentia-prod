@@ -42,6 +42,7 @@ Comandos:
 
 ```powershell
 cd backend
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe manage.py migrate
 .\.venv\Scripts\python.exe manage.py runserver
 ```
@@ -56,7 +57,6 @@ Base URL en Postman:
 Crear un Environment con variables:
 - `base_url` = `http://localhost:8000`
 - `access_token` = (vacio)
-- `refresh_token` = (vacio)
 - `user_id` = (vacio)
 - `region_id` = (vacio)
 - `comuna_id` = (vacio)
@@ -67,6 +67,10 @@ Crear un Environment con variables:
 
 Header global para requests autenticadas:
 - `Authorization: Bearer {{access_token}}`
+
+Importante para auth local:
+- Antes de `POST /auth/jwt/create/`, `POST /auth/jwt/refresh/` y `POST /auth/jwt/logout/` primero llama `GET /auth/csrf/`.
+- El backend devuelve `access` en el body y guarda el `refresh_token` en cookie HttpOnly. No esperes `refresh` en JSON.
 
 ---
 
@@ -101,6 +105,10 @@ Body:
 ## 4.2 Login JWT
 `POST {{base_url}}/auth/jwt/create/`
 
+Antes llama:
+
+`GET {{base_url}}/auth/csrf/`
+
 Body:
 ```json
 {
@@ -109,7 +117,23 @@ Body:
 }
 ```
 
-Guarda `access` y `refresh` en `access_token` y `refresh_token`.
+Guarda `access` en `access_token`.
+
+El `refresh_token` queda en cookie HttpOnly del cliente HTTP.
+
+Para Postman:
+- activa cookies del dominio `localhost`
+- envia `X-CSRFToken` con el valor de la cookie `csrftoken` en login, refresh y logout
+
+## 4.2.1 Refresh JWT por cookie
+`POST {{base_url}}/auth/jwt/refresh/`
+
+Requiere:
+- cookie `refresh_token`
+- header `X-CSRFToken`
+
+Respuesta:
+- nuevo `access`
 
 ## 4.3 Ver usuario actual
 `GET {{base_url}}/auth/users/me/`

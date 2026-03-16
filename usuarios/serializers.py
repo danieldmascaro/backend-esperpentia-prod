@@ -17,7 +17,7 @@ class ComunaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comuna
-        fields = ("id", "nombre", "region", "region_id")
+        fields = ("id", "nombre", "county_code", "region", "region_id")
 
 
 class UsuarioRegionComunaValidationMixin:

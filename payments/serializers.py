@@ -25,14 +25,14 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class PaymentWebhookSerializer(serializers.Serializer):
-    provider_reference = serializers.CharField()
+    provider_reference = serializers.CharField(max_length=120)
     status = serializers.ChoiceField(choices=Payment.Status.choices)
 
 
 class WebpayCommitSerializer(serializers.Serializer):
-    token_ws = serializers.CharField()
+    token_ws = serializers.CharField(max_length=128)
 
 
 class WebpayRefundSerializer(serializers.Serializer):
-    token_ws = serializers.CharField()
+    token_ws = serializers.CharField(max_length=128)
     amount = serializers.DecimalField(max_digits=12, decimal_places=0)

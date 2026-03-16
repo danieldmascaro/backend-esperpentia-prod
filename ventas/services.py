@@ -24,13 +24,44 @@ def _parse_date(date_str, end_of_day=False):
     return timezone.make_aware(dt, timezone.get_current_timezone())
 
 
-def _sales_queryset(date_from=None, date_to=None):
-    qs = Venta.objects.filter(status=Venta.Status.COMPLETED)
+def _sales_queryset(date_from=None, date_to=None, status_value=Venta.Status.COMPLETED, currency=None):
+    qs = Venta.objects.all()
+    if status_value:
+        qs = qs.filter(status=status_value)
+    if currency:
+        qs = qs.filter(currency=currency)
     if date_from:
         qs = qs.filter(sold_at__gte=date_from)
     if date_to:
         qs = qs.filter(sold_at__lte=date_to)
     return qs
+
+
+def sync_sale_status(venta, status):
+    if venta.status == status:
+        return venta
+    venta.status = status
+    venta.save(update_fields=["status", "updated_at"])
+    return venta
+
+
+def sync_sale_status_from_order(order):
+    if not getattr(order, "sale_id", None):
+        return None
+
+    if order.status == "cancelled":
+        return sync_sale_status(order.sale, Venta.Status.CANCELLED)
+
+    return sync_sale_status(order.sale, Venta.Status.COMPLETED)
+
+
+def sync_sale_status_from_payment(payment):
+    sale = payment.order.sale
+    if payment.status == "refunded":
+        return sync_sale_status(sale, Venta.Status.REFUNDED)
+    if payment.status == "failed":
+        return sync_sale_status(sale, Venta.Status.CANCELLED)
+    return sync_sale_status(sale, Venta.Status.COMPLETED)
 
 
 def create_sale_from_cart(cart):
@@ -82,8 +113,8 @@ def create_sale_from_cart(cart):
         return venta
 
 
-def get_sales_summary(date_from=None, date_to=None):
-    qs = _sales_queryset(date_from=date_from, date_to=date_to)
+def get_sales_summary(date_from=None, date_to=None, status_value=Venta.Status.COMPLETED, currency=None):
+    qs = _sales_queryset(date_from=date_from, date_to=date_to, status_value=status_value, currency=currency)
     aggregated = qs.aggregate(
         orders_count=Count("id"),
         total_subtotal=Sum("subtotal_amount"),
@@ -110,8 +141,8 @@ def get_sales_summary(date_from=None, date_to=None):
     }
 
 
-def get_sales_by_date(date_from=None, date_to=None, group_by="day"):
-    qs = _sales_queryset(date_from=date_from, date_to=date_to)
+def get_sales_by_date(date_from=None, date_to=None, group_by="day", status_value=Venta.Status.COMPLETED, currency=None):
+    qs = _sales_queryset(date_from=date_from, date_to=date_to, status_value=status_value, currency=currency)
     trunc = TruncMonth("sold_at") if group_by == "month" else TruncDay("sold_at")
     rows = (
         qs.annotate(period=trunc)
@@ -126,8 +157,12 @@ def get_sales_by_date(date_from=None, date_to=None, group_by="day"):
     return list(rows)
 
 
-def get_sales_by_book(date_from=None, date_to=None, limit=20):
-    qs = VentaItem.objects.filter(venta__status=Venta.Status.COMPLETED)
+def get_sales_by_book(date_from=None, date_to=None, limit=20, status_value=Venta.Status.COMPLETED, currency=None):
+    qs = VentaItem.objects.all()
+    if status_value:
+        qs = qs.filter(venta__status=status_value)
+    if currency:
+        qs = qs.filter(venta__currency=currency)
     if date_from:
         qs = qs.filter(sold_at__gte=date_from)
     if date_to:
@@ -147,4 +182,8 @@ def get_sales_by_book(date_from=None, date_to=None, limit=20):
 
 
 def parse_date_filters(date_from_str=None, date_to_str=None):
-    return _parse_date(date_from_str, end_of_day=False), _parse_date(date_to_str, end_of_day=True)
+    date_from = _parse_date(date_from_str, end_of_day=False)
+    date_to = _parse_date(date_to_str, end_of_day=True)
+    if date_from and date_to and date_from > date_to:
+        raise ValueError("date_from no puede ser mayor que date_to.")
+    return date_from, date_to

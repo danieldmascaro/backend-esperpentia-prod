@@ -4,9 +4,12 @@ from django.conf import settings
 from django.db import transaction
 
 from orders.models import Order
+from transbank.common.integration_type import IntegrationType
 from transbank.common.integration_api_keys import IntegrationApiKeys
 from transbank.common.integration_commerce_codes import IntegrationCommerceCodes
+from transbank.common.options import WebpayOptions
 from transbank.webpay.webpay_plus.transaction import Transaction
+from ventas.services import sync_sale_status_from_payment
 
 from .models import Payment
 
@@ -15,10 +18,28 @@ class PaymentIntegrationError(Exception):
     pass
 
 
+def _get_webpay_options():
+    commerce_code = str(
+        getattr(settings, "WEBPAY_COMMERCE_CODE", str(IntegrationCommerceCodes.WEBPAY_PLUS))
+    ).strip()
+    api_key = str(getattr(settings, "WEBPAY_API_KEY", IntegrationApiKeys.WEBPAY)).strip()
+    configured_environment = str(getattr(settings, "WEBPAY_ENVIRONMENT", "")).strip().upper()
+
+    if configured_environment in {"LIVE", "TEST", "MOCK"}:
+        integration_type = IntegrationType[configured_environment]
+    else:
+        is_default_integration_credentials = (
+            commerce_code == str(IntegrationCommerceCodes.WEBPAY_PLUS)
+            and api_key == IntegrationApiKeys.WEBPAY
+        )
+        integration_type = IntegrationType.TEST if is_default_integration_credentials else IntegrationType.LIVE
+
+    return WebpayOptions(commerce_code, api_key, integration_type), integration_type
+
+
 def _build_webpay_transaction():
-    commerce_code = getattr(settings, "WEBPAY_COMMERCE_CODE", str(IntegrationCommerceCodes.WEBPAY_PLUS))
-    api_key = getattr(settings, "WEBPAY_API_KEY", IntegrationApiKeys.WEBPAY)
-    return Transaction.build_for_integration(commerce_code, api_key)
+    options, _ = _get_webpay_options()
+    return Transaction(options)
 
 
 def _sync_order_status_from_payment(order, payment_status):
@@ -37,6 +58,7 @@ def _sync_order_status_from_payment(order, payment_status):
 def create_payment_intent(order, provider="mockpay"):
     if provider == "webpay":
         tx = _build_webpay_transaction()
+        _, integration_type = _get_webpay_options()
         buy_order = f"ORD{order.id.hex[:22]}"
         session_id = f"SES{order.id.hex[:22]}"
         amount = int(order.total_amount)
@@ -70,7 +92,7 @@ def create_payment_intent(order, provider="mockpay"):
             "amount": str(payment.amount),
             "currency": payment.currency,
             "status": payment.status,
-            "sandbox": True,
+            "sandbox": integration_type != IntegrationType.LIVE,
         }
 
     provider_reference = f"{provider}_{uuid4().hex[:20]}"
@@ -112,6 +134,7 @@ def commit_webpay_transaction(token):
     payment.save(update_fields=["status", "updated_at"])
 
     _sync_order_status_from_payment(payment.order, payment.status)
+    sync_sale_status_from_payment(payment)
     return payment, response
 
 
@@ -138,6 +161,7 @@ def webpay_refund(token, amount):
     payment.status = Payment.Status.REFUNDED
     payment.save(update_fields=["status", "updated_at"])
     _sync_order_status_from_payment(payment.order, payment.status)
+    sync_sale_status_from_payment(payment)
     return payment, response
 
 
@@ -148,5 +172,6 @@ def process_webhook(provider_reference, status):
     payment.save(update_fields=["status", "updated_at"])
 
     _sync_order_status_from_payment(payment.order, status)
+    sync_sale_status_from_payment(payment)
 
     return payment

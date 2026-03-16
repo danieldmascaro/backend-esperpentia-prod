@@ -12,9 +12,9 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(Comuna)
 class ComunaAdmin(admin.ModelAdmin):
-    list_display = ("id", "nombre", "region")
+    list_display = ("id", "nombre", "county_code", "region")
     list_filter = ("region",)
-    search_fields = ("nombre", "region__nombre")
+    search_fields = ("nombre", "county_code", "region__nombre")
 
 
 @admin.register(Usuario)

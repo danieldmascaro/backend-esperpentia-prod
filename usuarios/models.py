@@ -2,6 +2,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
+from .geography import generate_unique_county_code
+
 
 class Region(models.Model):
     nombre = models.CharField(max_length=150, unique=True)
@@ -16,6 +18,7 @@ class Region(models.Model):
 class Comuna(models.Model):
     nombre = models.CharField(max_length=150)
     region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="comunas")
+    county_code = models.CharField(max_length=4, unique=True, editable=False)
 
     class Meta:
         ordering = ["nombre"]
@@ -25,6 +28,16 @@ class Comuna(models.Model):
 
     def __str__(self):
         return f"{self.nombre}, {self.region.nombre}"
+
+    def save(self, *args, **kwargs):
+        if not self.county_code:
+            used_codes = set(
+                Comuna.objects.exclude(pk=self.pk)
+                .exclude(county_code__isnull=True)
+                .values_list("county_code", flat=True)
+            )
+            self.county_code = generate_unique_county_code(self.nombre, used_codes)
+        super().save(*args, **kwargs)
 
 
 class UsuarioManager(BaseUserManager):
