@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from .models import Venta
-from .serializers import VentaSerializer
+from .serializers import VentaDispatchUpdateSerializer, VentaSerializer
 from .services import (
     get_sales_by_book,
     get_sales_by_date,
@@ -18,7 +18,7 @@ class VentaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Venta.objects.prefetch_related("items").all()
     serializer_class = VentaSerializer
     permission_classes = [IsAdminUser]
-    filterset_fields = ("status", "currency")
+    filterset_fields = ("status", "currency", "despachado")
     ordering_fields = ("sold_at", "total_amount", "total_quantity", "created_at")
     ordering = ("-sold_at",)
 
@@ -88,3 +88,11 @@ class VentaViewSet(viewsets.ReadOnlyModelViewSet):
             currency=self._extract_currency(),
         )
         return Response(data)
+
+    @action(detail=True, methods=["patch"], url_path="dispatch-status")
+    def dispatch_status(self, request, pk=None):
+        venta = self.get_object()
+        serializer = VentaDispatchUpdateSerializer(instance=venta, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(VentaSerializer(venta).data)

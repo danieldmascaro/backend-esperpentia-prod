@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Cart, CartDiscount, CartItem, CartOperationLog, CartTaxLine
+from .models import Cart, CartDiscount, CartItem, CartOperationLog, CartTaxLine, DiscountCoupon
 
 
 class CartItemInline(admin.TabularInline):
@@ -41,3 +41,21 @@ class CartAdmin(admin.ModelAdmin):
 class CartOperationLogAdmin(admin.ModelAdmin):
     list_display = ("cart", "operation", "idempotency_key", "created_at", "expires_at")
     search_fields = ("cart__id", "operation", "idempotency_key")
+
+
+@admin.register(DiscountCoupon)
+class DiscountCouponAdmin(admin.ModelAdmin):
+    list_display = (
+        "code",
+        "type",
+        "value",
+        "min_subtotal_amount",
+        "max_discount_amount",
+        "active",
+        "usage_limit",
+        "times_used",
+        "valid_from",
+        "valid_until",
+    )
+    list_filter = ("type", "active")
+    search_fields = ("code",)

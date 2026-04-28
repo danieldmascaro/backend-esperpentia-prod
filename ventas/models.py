@@ -16,12 +16,22 @@ class Venta(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="ventas",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     guest_token = models.CharField(max_length=64, null=True, blank=True, db_index=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.COMPLETED, db_index=True)
+    despachado = models.BooleanField(default=False, db_index=True)
+    contact_first_name = models.CharField(max_length=120, blank=True, default="")
+    contact_last_name = models.CharField(max_length=120, blank=True, default="")
+    contact_email = models.EmailField(blank=True, default="")
+    contact_phone = models.CharField(max_length=32, blank=True, default="")
+    shipping_address = models.CharField(max_length=255, blank=True, default="")
+    shipping_city = models.CharField(max_length=120, blank=True, default="")
+    shipping_region = models.CharField(max_length=120, blank=True, default="")
+    shipping_postal_code = models.CharField(max_length=32, blank=True, default="")
+    shipping_country = models.CharField(max_length=80, blank=True, default="Chile")
     currency = models.CharField(max_length=3, default="CLP")
     subtotal_amount = models.DecimalField(max_digits=12, decimal_places=0, default=Decimal("0"))
     discount_amount = models.DecimalField(max_digits=12, decimal_places=0, default=Decimal("0"))
@@ -42,7 +52,7 @@ class Venta(models.Model):
 
 class VentaItem(models.Model):
     venta = models.ForeignKey(Venta, related_name="items", on_delete=models.CASCADE)
-    libro = models.ForeignKey("productos.Libro", on_delete=models.CASCADE)
+    libro = models.ForeignKey("productos.Libro", on_delete=models.SET_NULL, null=True, blank=True)
     libro_nombre = models.CharField(max_length=255)
     autor_nombre = models.CharField(max_length=255, blank=True)
     editorial_nombre = models.CharField(max_length=255, blank=True)
@@ -57,3 +67,10 @@ class VentaItem(models.Model):
 
     class Meta:
         ordering = ("id",)
+
+
+class VentaDespacho(Venta):
+    class Meta:
+        proxy = True
+        verbose_name = "Despacho"
+        verbose_name_plural = "Despachos"

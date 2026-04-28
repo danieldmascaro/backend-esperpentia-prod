@@ -49,6 +49,12 @@ db.sqlite3
 db.sqlite3-journal
 local_settings.py
 staticfiles/
+test_postgres
+test_*.sqlite3
+
+# Test and Benchmark scripts output
+benchmark_optimizations.py
+*.benchmark.log
 
 # Environment / secrets
 .env

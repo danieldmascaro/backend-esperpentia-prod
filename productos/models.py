@@ -37,6 +37,9 @@ class ProductoBase(models.Model):
 class Autor(models.Model):
     nombre = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(max_length=280, unique=True)
+    imagen = models.ImageField(upload_to="autores/%Y/%m/", blank=True, null=True)
+    fecha_nacimiento = models.DateField(blank=True, null=True)
+    nacionalidad = models.CharField(max_length=120, blank=True)
     biografia = models.TextField(blank=True)
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
@@ -65,6 +68,7 @@ class Genero(models.Model):
 class Editorial(models.Model):
     nombre = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(max_length=280, unique=True)
+    imagen = models.ImageField(upload_to="editoriales/%Y/%m/", blank=True, null=True)
     descripcion = models.TextField(blank=True)
     sitio_web = models.URLField(blank=True)
     creado_en = models.DateTimeField(auto_now_add=True)
@@ -84,6 +88,7 @@ class Obra(models.Model):
     genero = models.ForeignKey(Genero, related_name="obras", on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True)
     descripcion_corta = models.CharField(max_length=300, blank=True)
+    fecha_publicacion = models.DateField(blank=True, null=True)
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
 

@@ -41,6 +41,7 @@ urlpatterns = [
     path('shipping/', include('shipping.urls')),
     path('payments/', include('payments.urls')),
     path('ventas/', include('ventas.urls')),
+    path('blog/', include('blog.urls')),
 ]
 
 if not settings.IS_PRODUCTION:

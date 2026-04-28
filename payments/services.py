@@ -1,4 +1,5 @@
 from uuid import uuid4
+import logging
 
 from django.conf import settings
 from django.db import transaction
@@ -13,9 +14,41 @@ from ventas.services import sync_sale_status_from_payment
 
 from .models import Payment
 
+logger = logging.getLogger(__name__)
+
 
 class PaymentIntegrationError(Exception):
     pass
+
+
+ALLOWED_PAYMENT_TRANSITIONS = {
+    Payment.Status.PENDING: {
+        Payment.Status.PENDING,
+        Payment.Status.AUTHORIZED,
+        Payment.Status.PAID,
+        Payment.Status.FAILED,
+    },
+    Payment.Status.AUTHORIZED: {
+        Payment.Status.AUTHORIZED,
+        Payment.Status.PAID,
+        Payment.Status.FAILED,
+        Payment.Status.REFUNDED,
+    },
+    Payment.Status.PAID: {
+        Payment.Status.PAID,
+        Payment.Status.REFUNDED,
+    },
+    Payment.Status.FAILED: {Payment.Status.FAILED},
+    Payment.Status.REFUNDED: {Payment.Status.REFUNDED},
+}
+
+
+def _ensure_valid_payment_transition(payment, next_status):
+    allowed = ALLOWED_PAYMENT_TRANSITIONS.get(payment.status, {payment.status})
+    if next_status not in allowed:
+        raise PaymentIntegrationError(
+            f"Transicion de estado de pago invalida: {payment.status} -> {next_status}."
+        )
 
 
 def _get_webpay_options():
@@ -43,15 +76,18 @@ def _build_webpay_transaction():
 
 
 def _sync_order_status_from_payment(order, payment_status):
+    next_status = order.status
     if payment_status == Payment.Status.PAID:
-        order.status = Order.Status.PAID
+        next_status = Order.Status.PAID
     elif payment_status == Payment.Status.FAILED:
-        order.status = Order.Status.CANCELLED
+        next_status = Order.Status.CANCELLED
     elif payment_status == Payment.Status.REFUNDED:
-        order.status = Order.Status.CANCELLED
+        next_status = Order.Status.CANCELLED
     elif payment_status == Payment.Status.AUTHORIZED:
-        order.status = Order.Status.PROCESSING
-    order.save(update_fields=["status", "updated_at"])
+        next_status = Order.Status.PROCESSING
+    if order.status != next_status:
+        order.status = next_status
+        order.save(update_fields=["status", "updated_at"])
 
 
 @transaction.atomic
@@ -130,11 +166,19 @@ def commit_webpay_transaction(token):
     response_code = response.get("response_code")
     status_code = str(response.get("status", "")).upper()
     is_success = response_code == 0 and status_code == "AUTHORIZED"
-    payment.status = Payment.Status.PAID if is_success else Payment.Status.FAILED
+    next_status = Payment.Status.PAID if is_success else Payment.Status.FAILED
+    _ensure_valid_payment_transition(payment, next_status)
+    payment.status = next_status
     payment.save(update_fields=["status", "updated_at"])
 
-    _sync_order_status_from_payment(payment.order, payment.status)
-    sync_sale_status_from_payment(payment)
+    try:
+        _sync_order_status_from_payment(payment.order, payment.status)
+        sync_sale_status_from_payment(payment)
+    except Exception as exc:
+        logger.exception("Error sincronizando estado de orden/venta para token Webpay %s", token)
+        raise PaymentIntegrationError(
+            f"Error sincronizando estado interno tras commit Webpay: {exc}"
+        )
     return payment, response
 
 
@@ -158,6 +202,7 @@ def webpay_refund(token, amount):
     if not payment:
         raise PaymentIntegrationError("No existe un pago Webpay asociado al token.")
 
+    _ensure_valid_payment_transition(payment, Payment.Status.REFUNDED)
     payment.status = Payment.Status.REFUNDED
     payment.save(update_fields=["status", "updated_at"])
     _sync_order_status_from_payment(payment.order, payment.status)
@@ -167,7 +212,15 @@ def webpay_refund(token, amount):
 
 @transaction.atomic
 def process_webhook(provider_reference, status):
-    payment = Payment.objects.select_for_update().select_related("order").get(provider_reference=provider_reference)
+    payment = (
+        Payment.objects.select_for_update()
+        .select_related("order")
+        .filter(provider_reference=provider_reference)
+        .first()
+    )
+    if not payment:
+        raise PaymentIntegrationError("No existe un pago asociado al provider_reference recibido.")
+    _ensure_valid_payment_transition(payment, status)
     payment.status = status
     payment.save(update_fields=["status", "updated_at"])
 

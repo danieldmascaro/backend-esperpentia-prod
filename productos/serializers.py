@@ -6,7 +6,17 @@ from .models import Autor, Editorial, Genero, Libro, Obra
 class AutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Autor
-        fields = ("id", "nombre", "slug", "biografia", "creado_en", "actualizado_en")
+        fields = (
+            "id",
+            "nombre",
+            "slug",
+            "imagen",
+            "fecha_nacimiento",
+            "nacionalidad",
+            "biografia",
+            "creado_en",
+            "actualizado_en",
+        )
         read_only_fields = ("creado_en", "actualizado_en")
 
 
@@ -20,7 +30,16 @@ class GeneroSerializer(serializers.ModelSerializer):
 class EditorialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Editorial
-        fields = ("id", "nombre", "slug", "descripcion", "sitio_web", "creado_en", "actualizado_en")
+        fields = (
+            "id",
+            "nombre",
+            "slug",
+            "imagen",
+            "descripcion",
+            "sitio_web",
+            "creado_en",
+            "actualizado_en",
+        )
         read_only_fields = ("creado_en", "actualizado_en")
 
 
@@ -38,6 +57,7 @@ class ObraSerializer(serializers.ModelSerializer):
             "slug",
             "descripcion",
             "descripcion_corta",
+            "fecha_publicacion",
             "autor",
             "autor_id",
             "genero",

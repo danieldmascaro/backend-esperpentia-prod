@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from .models import DiscountCoupon
 from orders.models import Order
 from productos.models import Autor, Editorial, Genero, Libro, Obra
 from ventas.models import Venta
@@ -89,3 +90,39 @@ class CheckoutApiTests(TestCase):
         self.assertEqual(second_response.data, first_response.data)
         self.assertEqual(Venta.objects.filter(cart_id=cart_id).count(), 1)
         self.assertEqual(Order.objects.filter(sale__cart_id=cart_id).count(), 1)
+
+    def test_apply_discount_requires_backend_coupon(self):
+        guest_token = "guest-discount-check"
+        resolve_response = self.client.post(
+            "/checkout/carts/resolve/",
+            {"guest_token": guest_token, "currency": "CLP"},
+            format="json",
+        )
+        self.assertEqual(resolve_response.status_code, status.HTTP_200_OK)
+        cart_id = resolve_response.data["id"]
+
+        add_response = self.client.post(
+            f"/checkout/carts/{cart_id}/add-item/",
+            {"book_id": self.book.id, "quantity": 2},
+            format="json",
+            HTTP_X_GUEST_TOKEN=guest_token,
+        )
+        self.assertEqual(add_response.status_code, status.HTTP_200_OK)
+
+        invalid_coupon_response = self.client.post(
+            f"/checkout/carts/{cart_id}/apply-discount/",
+            {"code": "INEXISTENTE"},
+            format="json",
+            HTTP_X_GUEST_TOKEN=guest_token,
+        )
+        self.assertEqual(invalid_coupon_response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        DiscountCoupon.objects.create(code="PROMO10", type="percent", value=10, active=True)
+        valid_coupon_response = self.client.post(
+            f"/checkout/carts/{cart_id}/apply-discount/",
+            {"code": "PROMO10"},
+            format="json",
+            HTTP_X_GUEST_TOKEN=guest_token,
+        )
+        self.assertEqual(valid_coupon_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(valid_coupon_response.data["discount_amount"], "2598")

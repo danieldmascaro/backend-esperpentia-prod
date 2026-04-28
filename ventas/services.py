@@ -64,7 +64,37 @@ def sync_sale_status_from_payment(payment):
     return sync_sale_status(sale, Venta.Status.COMPLETED)
 
 
-def create_sale_from_cart(cart):
+def _normalize_contact_payload(cart, contact_data):
+    payload = dict(contact_data or {})
+    user = cart.user
+
+    first_name = (payload.get("contact_first_name") or "").strip()
+    last_name = (payload.get("contact_last_name") or "").strip()
+    email = (payload.get("contact_email") or "").strip()
+    phone = (payload.get("contact_phone") or "").strip()
+
+    if user:
+        if not first_name:
+            first_name = (getattr(user, "nombre", "") or "").strip()
+        if not last_name:
+            last_name = (getattr(user, "apellido", "") or "").strip()
+        if not email:
+            email = (getattr(user, "email", "") or "").strip()
+
+    return {
+        "contact_first_name": first_name,
+        "contact_last_name": last_name,
+        "contact_email": email,
+        "contact_phone": phone,
+        "shipping_address": (payload.get("shipping_address") or "").strip(),
+        "shipping_city": (payload.get("shipping_city") or "").strip(),
+        "shipping_region": (payload.get("shipping_region") or "").strip(),
+        "shipping_postal_code": (payload.get("shipping_postal_code") or "").strip(),
+        "shipping_country": (payload.get("shipping_country") or "Chile").strip(),
+    }
+
+
+def create_sale_from_cart(cart, contact_data=None):
     existing = Venta.objects.filter(cart_id=cart.id).first()
     if existing:
         return existing
@@ -75,10 +105,13 @@ def create_sale_from_cart(cart):
     total_quantity = sum(item.quantity for item in items)
 
     with transaction.atomic():
+        contact_payload = _normalize_contact_payload(cart, contact_data)
         venta = Venta.objects.create(
             cart_id=cart.id,
             user=cart.user,
             guest_token=cart.guest_token,
+            despachado=False,
+            **contact_payload,
             currency=cart.currency,
             subtotal_amount=cart.subtotal_amount,
             discount_amount=cart.discount_amount,

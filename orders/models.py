@@ -14,11 +14,11 @@ class Order(models.Model):
         CANCELLED = "cancelled", "Cancelled"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    sale = models.OneToOneField("ventas.Venta", related_name="order", on_delete=models.CASCADE)
+    sale = models.OneToOneField("ventas.Venta", related_name="order", on_delete=models.PROTECT)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="orders",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )

@@ -94,11 +94,14 @@ class FriendlyAdminMixin:
 @admin.register(Autor)
 class AutorAdmin(FriendlyAdminMixin, admin.ModelAdmin):
     form = AutorAdminForm
-    list_display = ("nombre", "slug", "creado_en")
-    search_fields = ("nombre", "slug")
+    list_display = ("nombre", "nacionalidad", "fecha_nacimiento", "slug", "creado_en")
+    search_fields = ("nombre", "slug", "nacionalidad")
     readonly_fields = ("creado_en", "actualizado_en")
     fieldsets = (
-        (_("Datos del autor"), {"fields": ("nombre", "slug", "biografia")}),
+        (
+            _("Datos del autor"),
+            {"fields": ("nombre", "slug", "imagen", "fecha_nacimiento", "nacionalidad", "biografia")},
+        ),
         (_("Fechas"), {"fields": ("creado_en", "actualizado_en"), "classes": ("collapse",)}),
     )
 
@@ -122,7 +125,7 @@ class EditorialAdmin(FriendlyAdminMixin, admin.ModelAdmin):
     search_fields = ("nombre", "slug")
     readonly_fields = ("creado_en", "actualizado_en")
     fieldsets = (
-        (_("Datos de la editorial"), {"fields": ("nombre", "slug", "descripcion", "sitio_web")}),
+        (_("Datos de la editorial"), {"fields": ("nombre", "slug", "imagen", "descripcion", "sitio_web")}),
         (_("Fechas"), {"fields": ("creado_en", "actualizado_en"), "classes": ("collapse",)}),
     )
 
@@ -130,7 +133,7 @@ class EditorialAdmin(FriendlyAdminMixin, admin.ModelAdmin):
 @admin.register(Obra)
 class ObraAdmin(FriendlyAdminMixin, admin.ModelAdmin):
     form = ObraAdminForm
-    list_display = ("titulo", "autor", "genero", "creado_en")
+    list_display = ("titulo", "autor", "genero", "fecha_publicacion", "creado_en")
     search_fields = ("titulo", "slug", "autor__nombre", "genero__nombre")
     list_filter = ("genero", "autor")
     list_select_related = ("autor", "genero")
@@ -139,7 +142,17 @@ class ObraAdmin(FriendlyAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (
             _("Ficha de la obra"),
-            {"fields": ("titulo", "slug", "autor", "genero", "descripcion_corta", "descripcion")},
+            {
+                "fields": (
+                    "titulo",
+                    "slug",
+                    "autor",
+                    "genero",
+                    "fecha_publicacion",
+                    "descripcion_corta",
+                    "descripcion",
+                )
+            },
         ),
         (_("Fechas"), {"fields": ("creado_en", "actualizado_en"), "classes": ("collapse",)}),
     )

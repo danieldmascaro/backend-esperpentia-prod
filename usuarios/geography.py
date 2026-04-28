@@ -10,6 +10,62 @@ LEGACY_SHIPPING_COUNTY_CODES_URL = "https://gist.githubusercontent.com/baamenaba
 OFFICIAL_REGION_NAME_OVERRIDES = {
     "03": "Región de Atacama",
 }
+OFFICIAL_REGION_SUPPLEMENTS = {
+    "Region Metropolitana de Santiago": (
+        "Alhue",
+        "Buin",
+        "Calera de Tango",
+        "Cerrillos",
+        "Cerro Navia",
+        "Colina",
+        "Conchali",
+        "Curacavi",
+        "El Bosque",
+        "El Monte",
+        "Estacion Central",
+        "Huechuraba",
+        "Independencia",
+        "Isla de Maipo",
+        "La Cisterna",
+        "La Florida",
+        "La Granja",
+        "La Pintana",
+        "La Reina",
+        "Lampa",
+        "Las Condes",
+        "Lo Barnechea",
+        "Lo Espejo",
+        "Lo Prado",
+        "Macul",
+        "Maipu",
+        "Maria Pinto",
+        "Melipilla",
+        "Nunoa",
+        "Padre Hurtado",
+        "Paine",
+        "Pedro Aguirre Cerda",
+        "Penaflor",
+        "Penalolen",
+        "Pirque",
+        "Providencia",
+        "Pudahuel",
+        "Puente Alto",
+        "Quilicura",
+        "Quinta Normal",
+        "Recoleta",
+        "Renca",
+        "San Bernardo",
+        "San Joaquin",
+        "San Jose de Maipo",
+        "San Miguel",
+        "San Pedro",
+        "San Ramon",
+        "Santiago",
+        "Talagante",
+        "Tiltil",
+        "Vitacura",
+    ),
+}
 
 COUNTY_CODE_ALIASES = {
     "AYSEN": "PUERTO AYSEN",
@@ -29,6 +85,7 @@ LEGACY_REGION_REDIRECTS = {
     "BIOBIO": "REGION DEL BIO BIO",
     "LIBERTADOR GENERAL BERNARDO O HIGGINS": "REGION DEL LIBERTADOR BERNARDO O HIGGINS",
     "MAGALLANES Y DE LA ANTARTICA CHILENA": "REGION DE MAGALLANES Y LA ANTARTICA CHILENA",
+    "REGION METROPOLITANA": "REGION METROPOLITANA DE SANTIAGO",
 }
 
 
@@ -59,11 +116,31 @@ def fetch_text(url):
 
 
 def iter_official_regions_and_comunas(geojson):
+    emitted = set()
+
     for region in geojson["regiones"]:
         region_name = OFFICIAL_REGION_NAME_OVERRIDES.get(region["codigo"], region["nombre_largo"])
         for provincia in region["provincias"]:
             for comuna in provincia["comunas"]:
+                key = (
+                    normalize_geography_name(region_name),
+                    normalize_geography_name(comuna["nombre"]),
+                )
+                if key in emitted:
+                    continue
+                emitted.add(key)
                 yield region_name, comuna["nombre"]
+
+    for region_name, comunas in OFFICIAL_REGION_SUPPLEMENTS.items():
+        for comuna_name in comunas:
+            key = (
+                normalize_geography_name(region_name),
+                normalize_geography_name(comuna_name),
+            )
+            if key in emitted:
+                continue
+            emitted.add(key)
+            yield region_name, comuna_name
 
 
 def normalize_region_key(value):
@@ -131,3 +208,5 @@ def resolve_county_code(name, shipping_codes, used_codes):
             return shipping_code
 
     return generate_unique_county_code(name, used_codes)
+
+

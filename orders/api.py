@@ -1,12 +1,14 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from ventas.services import sync_sale_status_from_order
 from .models import Order
 from .serializers import OrderSerializer, OrderStatusUpdateSerializer
+from .services import OrderTransitionError, assert_valid_order_transition
 
 
 class OrderViewSet(viewsets.ReadOnlyModelViewSet):
@@ -48,7 +50,12 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
         order = get_object_or_404(self.queryset, pk=pk)
         serializer = OrderStatusUpdateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        order.status = serializer.validated_data["status"]
+        next_status = serializer.validated_data["status"]
+        try:
+            assert_valid_order_transition(order.status, next_status)
+        except OrderTransitionError as exc:
+            raise ValidationError({"detail": str(exc)})
+        order.status = next_status
         order.save(update_fields=["status", "updated_at"])
         sync_sale_status_from_order(order)
         return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)

@@ -6,13 +6,17 @@ from rest_framework.settings import api_settings
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
+from django.db.models import Prefetch
+import logging
+from uuid import uuid4
 
 from inventory.services import InventoryError
-from .models import Cart
+from .models import Cart, CartItem
 from .serializers import (
     AddCartItemSerializer,
     ApplyDiscountSerializer,
     CartSerializer,
+    ConvertCartSerializer,
     ResolveCartSerializer,
     UpdateCartItemSerializer,
 )
@@ -30,11 +34,20 @@ from .services import (
     update_cart_item,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class CartViewSet(viewsets.GenericViewSet):
-    queryset = Cart.objects.prefetch_related("items", "discounts", "tax_lines")
     serializer_class = CartSerializer
     permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        """Optimizar queryset con prefetches y select_related."""
+        return Cart.objects.prefetch_related(
+            Prefetch('items', queryset=CartItem.objects.select_related('book')),
+            'discounts',
+            'tax_lines'
+        )
 
     def get_throttles(self):
         throttle_classes = list(api_settings.DEFAULT_THROTTLE_CLASSES)
@@ -144,7 +157,10 @@ class CartViewSet(viewsets.GenericViewSet):
         if cached:
             return Response(cached)
 
-        cart = remove_cart_item(cart.id, item_id)
+        try:
+            cart = remove_cart_item(cart.id, item_id)
+        except CheckoutError as exc:
+            raise ValidationError({"detail": str(exc)})
         payload = CartSerializer(cart).data
         store_idempotent_payload(cart, "remove_item", idempotency_key, payload)
         return Response(payload, status=status.HTTP_200_OK)
@@ -161,13 +177,10 @@ class CartViewSet(viewsets.GenericViewSet):
         serializer = ApplyDiscountSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        cart = apply_discount(
-            cart.id,
-            discount_type=data["type"],
-            value=data.get("value", "0"),
-            code=data.get("code", ""),
-            metadata=data.get("metadata", {}),
-        )
+        try:
+            cart = apply_discount(cart.id, code=data["code"])
+        except CheckoutError as exc:
+            raise ValidationError({"detail": str(exc)})
         payload = CartSerializer(cart).data
         store_idempotent_payload(cart, "apply_discount", idempotency_key, payload)
         return Response(payload)
@@ -187,10 +200,22 @@ class CartViewSet(viewsets.GenericViewSet):
         cached = get_idempotent_payload(cart, "convert", idempotency_key)
         if cached:
             return Response(cached)
+
+        convert_serializer = ConvertCartSerializer(data=request.data or {})
+        convert_serializer.is_valid(raise_exception=True)
         try:
-            cart = convert_cart_to_order(cart.id)
+            cart, order = convert_cart_to_order(cart.id, contact_data=convert_serializer.validated_data)
         except (CheckoutError, InventoryError) as exc:
             raise ValidationError({"detail": str(exc)})
-        payload = CartSerializer(cart).data
+        except Exception as exc:
+            error_id = uuid4().hex[:12]
+            logger.exception("Error inesperado al convertir carrito. error_id=%s", error_id)
+            raise ValidationError({"detail": f"Error interno en checkout convert. ref={error_id}: {exc}"})
+        payload = {
+            "cart": CartSerializer(cart).data,
+            "order_id": str(order.id),
+            "sale_id": str(order.sale_id),
+            "order_status": order.status,
+        }
         store_idempotent_payload(cart, "convert", idempotency_key, payload)
         return Response(payload, status=status.HTTP_200_OK)

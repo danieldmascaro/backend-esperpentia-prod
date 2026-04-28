@@ -71,7 +71,16 @@ class UpdateCartItemSerializer(serializers.Serializer):
 
 
 class ApplyDiscountSerializer(serializers.Serializer):
-    type = serializers.ChoiceField(choices=CartDiscount.Type.choices)
-    value = serializers.DecimalField(max_digits=12, decimal_places=0, required=False, default="0")
-    code = serializers.CharField(required=False, allow_blank=True, max_length=64)
-    metadata = serializers.DictField(required=False, default=dict)
+    code = serializers.CharField(required=True, allow_blank=False, max_length=64)
+
+
+class ConvertCartSerializer(serializers.Serializer):
+    contact_first_name = serializers.CharField(required=False, allow_blank=True, max_length=120)
+    contact_last_name = serializers.CharField(required=False, allow_blank=True, max_length=120)
+    contact_email = serializers.EmailField(required=False, allow_blank=True, max_length=254)
+    contact_phone = serializers.CharField(required=False, allow_blank=True, max_length=32)
+    shipping_address = serializers.CharField(required=False, allow_blank=True, max_length=255)
+    shipping_city = serializers.CharField(required=False, allow_blank=True, max_length=120)
+    shipping_region = serializers.CharField(required=False, allow_blank=True, max_length=120)
+    shipping_postal_code = serializers.CharField(required=False, allow_blank=True, max_length=32)
+    shipping_country = serializers.CharField(required=False, allow_blank=True, max_length=80)

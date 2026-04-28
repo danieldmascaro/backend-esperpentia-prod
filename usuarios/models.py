@@ -68,6 +68,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     nombre = models.CharField(max_length=150)
     apellido = models.CharField(max_length=150)
+    telefono = models.CharField(max_length=32)
     direccion_entrega = models.CharField(max_length=255, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name="usuarios", blank=True, null=True)
     comuna = models.ForeignKey(Comuna, on_delete=models.CASCADE, related_name="usuarios", blank=True, null=True)
@@ -78,7 +79,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     objects = UsuarioManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["nombre", "apellido"]
+    REQUIRED_FIELDS = ["nombre", "apellido", "telefono"]
 
     def __str__(self):
         return f"{self.nombre} {self.apellido} <{self.email}>"

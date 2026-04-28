@@ -5,7 +5,8 @@ from .models import Payment
 
 class CreatePaymentIntentSerializer(serializers.Serializer):
     order_id = serializers.UUIDField()
-    provider = serializers.ChoiceField(choices=["mockpay", "webpay"], default="mockpay")
+    provider = serializers.ChoiceField(choices=["mockpay", "webpay"], default="webpay")
+    guest_token = serializers.CharField(required=False, allow_blank=False, max_length=64)
 
 
 class PaymentSerializer(serializers.ModelSerializer):

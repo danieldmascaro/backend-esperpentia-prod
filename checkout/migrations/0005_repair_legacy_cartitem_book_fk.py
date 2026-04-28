@@ -5,6 +5,8 @@ from django.db import migrations
 
 def repair_legacy_cartitem_book_fk(apps, schema_editor):
     connection = schema_editor.connection
+    if connection.vendor != "postgresql":
+        return
 
     with connection.cursor() as cursor:
         cursor.execute(

@@ -33,6 +33,16 @@ class VentaSerializer(serializers.ModelSerializer):
             "user_id",
             "guest_token",
             "status",
+            "despachado",
+            "contact_first_name",
+            "contact_last_name",
+            "contact_email",
+            "contact_phone",
+            "shipping_address",
+            "shipping_city",
+            "shipping_region",
+            "shipping_postal_code",
+            "shipping_country",
             "currency",
             "subtotal_amount",
             "discount_amount",
@@ -43,3 +53,9 @@ class VentaSerializer(serializers.ModelSerializer):
             "sold_at",
             "items",
         )
+
+
+class VentaDispatchUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Venta
+        fields = ("despachado",)

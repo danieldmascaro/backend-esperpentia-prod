@@ -6,6 +6,7 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
+from checkout.models import DiscountCoupon
 from orders.models import Order
 from payments.models import Payment
 from productos.models import Autor, Editorial, Genero, Libro, Obra
@@ -41,6 +42,7 @@ class BackendEndpointsV2Tests(APITestCase):
             email="admin@test.com",
             nombre="Admin",
             apellido="Root",
+            telefono="+56911110001",
             password=cls.password,
             region=cls.region_metropolitana,
             comuna=cls.comuna_santiago,
@@ -49,6 +51,7 @@ class BackendEndpointsV2Tests(APITestCase):
             email="cliente@test.com",
             nombre="Cliente",
             apellido="Principal",
+            telefono="+56911110002",
             password=cls.password,
             direccion_entrega="Av. Demo 123",
             region=cls.region_metropolitana,
@@ -58,6 +61,7 @@ class BackendEndpointsV2Tests(APITestCase):
             email="cliente2@test.com",
             nombre="Cliente2",
             apellido="Secundario",
+            telefono="+56911110003",
             password=cls.password,
             direccion_entrega="Calle 456",
             region=cls.region_valparaiso,
@@ -147,6 +151,12 @@ class BackendEndpointsV2Tests(APITestCase):
 
         ShippingMethod.objects.create(name="Estandar", price=2990, region="RM", active=True)
         ShippingMethod.objects.create(name="Express", price=4990, region="RM", active=True)
+        DiscountCoupon.objects.create(
+            code="PROMO10",
+            type="percent",
+            value=Decimal("10"),
+            active=True,
+        )
 
     def _login(self, email, password):
         csrf_token = self._get_csrf_token()
@@ -299,6 +309,7 @@ class BackendEndpointsV2Tests(APITestCase):
             "email": "nuevo.auth@test.com",
             "nombre": "Nuevo",
             "apellido": "Usuario",
+            "telefono": "+56911110004",
             "direccion_entrega": "Dir test",
             "region_id": self.region_metropolitana.id,
             "comuna_id": self.comuna_santiago.id,
@@ -528,7 +539,7 @@ class BackendEndpointsV2Tests(APITestCase):
 
         response = self.client.post(
             f"/checkout/carts/{cart_id}/apply-discount/",
-            {"type": "percent", "value": "10", "code": "PROMO10", "metadata": {}},
+            {"code": "PROMO10"},
             format="json",
             HTTP_IDEMPOTENCY_KEY="discount-1",
             **auth,
@@ -558,14 +569,14 @@ class BackendEndpointsV2Tests(APITestCase):
 
         order = Order.objects.filter(user=self.customer).order_by("-created_at").first()
         self.assertIsNotNone(order)
-
-        response = self.client.get("/inventory/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        response = self.client.get(f"/inventory/{self.book.id}/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         admin_auth = self._auth(self.admin)
+
+        response = self.client.get("/inventory/", **admin_auth)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"/inventory/{self.book.id}/", **admin_auth)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
         response = self.client.patch(
             f"/inventory/{self.book.id}/",
             {"stock": 35, "reserved_stock": 0},
@@ -670,7 +681,7 @@ class BackendEndpointsV2Tests(APITestCase):
                 "/payments/webpay/refund/",
                 {"token_ws": "token-test-webpay", "amount": str(order.total_amount)},
                 format="json",
-                **auth,
+                **admin_auth,
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 

@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
+from config.pagination import StandardResultsSetPagination
 from productos.models import Libro
 
 from .models import InventoryItem
@@ -12,14 +13,18 @@ from .serializers import InventoryItemSerializer, InventoryUpdateSerializer
 from .services import get_inventory_queryset, get_or_create_inventory_item, inventory_monitoring_snapshot
 
 
-class InventoryViewSet(viewsets.ViewSet):
+class InventoryViewSet(viewsets.GenericViewSet):
+    pagination_class = StandardResultsSetPagination
+
     def get_permissions(self):
-        if self.action in {"partial_update", "monitoring"}:
-            return [IsAdminUser()]
-        return [AllowAny()]
+        return [IsAdminUser()]
 
     def list(self, request):
         queryset = get_inventory_queryset()
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = InventoryItemSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = InventoryItemSerializer(queryset, many=True)
         return Response(serializer.data)
 

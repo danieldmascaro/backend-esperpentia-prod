@@ -13,6 +13,7 @@ class ProductosAdminCreationTests(TestCase):
             email="admin-productos@test.com",
             nombre="Admin",
             apellido="Productos",
+            telefono="+56923000001",
             password="AdminPass123!",
         )
 
@@ -93,3 +94,52 @@ class ProductosAdminCreationTests(TestCase):
         libro = Libro.objects.get(sku="ADM-BOOK-001")
         self.assertEqual(libro.nombre, "Obra Admin")
         self.assertTrue(libro.slug.startswith("obra-admin"))
+
+
+class CatalogPaginationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        autor = Autor.objects.create(nombre="Autor Paginacion", slug="autor-paginacion")
+        genero = Genero.objects.create(nombre="Genero Paginacion", slug="genero-paginacion")
+        editorial = Editorial.objects.create(
+            nombre="Editorial Paginacion",
+            slug="editorial-paginacion",
+        )
+
+        for index in range(17):
+            obra = Obra.objects.create(
+                titulo=f"Obra Paginacion {index + 1}",
+                slug=f"obra-paginacion-{index + 1}",
+                autor=autor,
+                genero=genero,
+            )
+            Libro.objects.create(
+                obra=obra,
+                editorial=editorial,
+                slug=f"libro-paginacion-{index + 1}",
+                sku=f"PAG-{index + 1:03}",
+                precio=10000 + index,
+                stock=10,
+                tipo_tapa=Libro.TipoTapa.BLANDA,
+                cantidad_paginas=120 + index,
+                activo=True,
+            )
+
+    def test_catalog_books_endpoint_is_paginated(self):
+        first_page = self.client.get("/catalog/books/")
+        self.assertEqual(first_page.status_code, 200)
+        first_data = first_page.json()
+
+        self.assertEqual(first_data["count"], 17)
+        self.assertEqual(len(first_data["results"]), 15)
+        self.assertIsNotNone(first_data["next"])
+        self.assertIsNone(first_data["previous"])
+
+        second_page = self.client.get("/catalog/books/?page=2")
+        self.assertEqual(second_page.status_code, 200)
+        second_data = second_page.json()
+
+        self.assertEqual(second_data["count"], 17)
+        self.assertEqual(len(second_data["results"]), 2)
+        self.assertIsNone(second_data["next"])
+        self.assertIsNotNone(second_data["previous"])

@@ -20,14 +20,15 @@ class ComunaAdmin(admin.ModelAdmin):
 @admin.register(Usuario)
 class UsuarioAdmin(UserAdmin):
     model = Usuario
-    list_display = ("email", "nombre", "apellido", "region", "comuna", "is_staff", "is_active")
+    list_display = ("email", "nombre", "apellido", "telefono", "region", "comuna", "is_staff", "is_active")
     list_filter = ("is_staff", "is_active", "region")
     ordering = ("email",)
-    search_fields = ("email", "nombre", "apellido", "region__nombre", "comuna__nombre")
+    search_fields = ("email", "nombre", "apellido", "telefono", "region__nombre", "comuna__nombre")
+    readonly_fields = ("last_login", "date_joined")
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        ("Informacion personal", {"fields": ("nombre", "apellido", "direccion_entrega", "region", "comuna")}),
+        ("Informacion personal", {"fields": ("nombre", "apellido", "telefono", "direccion_entrega", "region", "comuna")}),
         ("Permisos", {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
         ("Fechas", {"fields": ("last_login", "date_joined")}),
     )
@@ -37,7 +38,7 @@ class UsuarioAdmin(UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "nombre", "apellido", "direccion_entrega", "region", "comuna", "password1", "password2"),
+                "fields": ("email", "nombre", "apellido", "telefono", "direccion_entrega", "region", "comuna", "password1", "password2"),
             },
         ),
     )

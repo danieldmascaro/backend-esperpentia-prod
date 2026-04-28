@@ -45,6 +45,7 @@ class UsuarioSerializer(UsuarioRegionComunaValidationMixin, serializers.ModelSer
             "email",
             "nombre",
             "apellido",
+            "telefono",
             "direccion_entrega",
             "region",
             "region_id",
@@ -86,6 +87,7 @@ class SuperUsuarioSerializer(UsuarioRegionComunaValidationMixin, serializers.Mod
             "email",
             "nombre",
             "apellido",
+            "telefono",
             "direccion_entrega",
             "region",
             "region_id",
@@ -126,7 +128,7 @@ class DjoserUserCreateSerializer(UsuarioRegionComunaValidationMixin, BaseUserCre
 
     class Meta(BaseUserCreateSerializer.Meta):
         model = Usuario
-        fields = ("id", "email", "nombre", "apellido", "direccion_entrega", "region_id", "comuna_id", "password")
+        fields = ("id", "email", "nombre", "apellido", "telefono", "direccion_entrega", "region_id", "comuna_id", "password")
 
 
 class DjoserUserSerializer(UsuarioRegionComunaValidationMixin, BaseDjoserUserSerializer):
@@ -137,4 +139,23 @@ class DjoserUserSerializer(UsuarioRegionComunaValidationMixin, BaseDjoserUserSer
 
     class Meta(BaseDjoserUserSerializer.Meta):
         model = Usuario
-        fields = ("id", "email", "nombre", "apellido", "direccion_entrega", "region", "region_id", "comuna", "comuna_id")
+        fields = (
+            "id",
+            "email",
+            "nombre",
+            "apellido",
+            "telefono",
+            "direccion_entrega",
+            "region",
+            "region_id",
+            "comuna",
+            "comuna_id",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+        )
+        read_only_fields = tuple(getattr(BaseDjoserUserSerializer.Meta, "read_only_fields", ())) + (
+            "is_active",
+            "is_staff",
+            "is_superuser",
+        )
