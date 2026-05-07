@@ -244,10 +244,12 @@ if IS_PRODUCTION and SECRET_KEY == _DEFAULT_SECRET_KEY:
 
 _default_webpay_code = "597055555532"
 _default_webpay_key = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"
-if IS_PRODUCTION and (
+if IS_PRODUCTION and WEBPAY_ENVIRONMENT == "LIVE" and (
     WEBPAY_COMMERCE_CODE == _default_webpay_code or WEBPAY_API_KEY == _default_webpay_key
 ):
-    raise ImproperlyConfigured("Las credenciales de Webpay deben configurarse en produccion.")
+    raise ImproperlyConfigured(
+        "Las credenciales de Webpay LIVE deben configurarse en produccion."
+    )
 
 if IS_PRODUCTION and not PAYMENTS_WEBHOOK_SECRET:
     raise ImproperlyConfigured("PAYMENTS_WEBHOOK_SECRET debe configurarse en produccion.")
