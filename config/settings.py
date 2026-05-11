@@ -108,9 +108,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("DB_URL")
+if DATABASE_URL and not os.getenv("DATABASE_URL"):
+    # Compatibilidad heredada: algunos entornos usan DB_URL.
+    # Normalizamos para que dj-database-url lea siempre DATABASE_URL.
+    os.environ["DATABASE_URL"] = DATABASE_URL
+
 DATABASES = {
     "default": dj_database_url.config(
-        env="DB_URL" if os.getenv("DB_URL") else "DATABASE_URL",
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
         ssl_require=DATABASE_URL.startswith("postgresql://") if DATABASE_URL else False,

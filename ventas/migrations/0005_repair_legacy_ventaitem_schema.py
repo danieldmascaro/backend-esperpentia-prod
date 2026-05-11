@@ -2,6 +2,9 @@ from django.db import migrations
 
 
 def _repair_legacy_ventaitem_schema(apps, schema_editor):
+    if schema_editor.connection.vendor != "postgresql":
+        return
+
     table_name = "ventas_ventaitem"
 
     with schema_editor.connection.cursor() as cursor:

@@ -19,10 +19,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.static import serve
+from config.diagnostics import db_health
 from usuarios.auth_views import CsrfCookieView, CookieLogoutView, CookieTokenObtainPairView, CookieTokenRefreshView
 from usuarios.views import activate_user_from_link
 
 urlpatterns = [
+    path("health/db/", db_health, name="health-db"),
     path('admin/', admin.site.urls),
     path('activate/<uid>/<token>', activate_user_from_link, name='users-activate-link'),
     path('activate/<uid>/<token>/', activate_user_from_link, name='users-activate-link-slash'),
