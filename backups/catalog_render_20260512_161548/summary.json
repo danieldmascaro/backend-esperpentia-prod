@@ -1,0 +1,35 @@
+{
+  "counts": {
+    "authors": 15,
+    "genres": 12,
+    "publishers": 12,
+    "works": 21,
+    "books": 21,
+    "cart_items": 9,
+    "inventory_items": 6,
+    "venta_items": 9
+  },
+  "media_files_copied": [
+    "libros/2026/04/seed/george-orwell-1984.jpg",
+    "libros/2026/04/seed/george-orwell-animal-farm.jpg",
+    "libros/2026/04/seed/jane-austen-pride-and-prejudice.jpg",
+    "libros/2026/04/seed/charlotte-bronte-jane-eyre.jpg",
+    "libros/2026/04/seed/emily-bronte-wuthering-heights.jpg",
+    "libros/2026/04/seed/f-scott-fitzgerald-the-great-gatsby.jpg",
+    "libros/2026/04/seed/harper-lee-to-kill-a-mockingbird.jpg",
+    "libros/2026/04/seed/j-d-salinger-the-catcher-in-the-rye.jpg",
+    "libros/2026/04/seed/ray-bradbury-fahrenheit-451.jpg",
+    "libros/2026/04/seed/aldous-huxley-brave-new-world.jpg",
+    "libros/2026/04/seed/frank-herbert-dune.jpg",
+    "libros/2026/04/seed/j-r-r-tolkien-the-hobbit.jpg",
+    "libros/2026/04/seed/j-r-r-tolkien-the-fellowship-of-the-ring.jpg",
+    "libros/2026/04/seed/j-r-r-tolkien-the-two-towers.jpg",
+    "libros/2026/04/seed/j-r-r-tolkien-the-return-of-the-king.jpg",
+    "libros/2026/04/seed/j-k-rowling-harry-potter-and-the-sorcerers-stone.jpg",
+    "libros/2026/04/seed/j-k-rowling-harry-potter-and-the-chamber-of-secrets.jpg",
+    "libros/2026/04/seed/j-k-rowling-harry-potter-and-the-prisoner-of-azkaban.jpg",
+    "libros/2026/04/seed/george-r-r-martin-a-game-of-thrones.jpg",
+    "libros/2026/04/seed/patrick-rothfuss-the-name-of-the-wind.jpg",
+    "libros/2026/04/aviadores-maximiliano-diaz.jpg"
+  ]
+}

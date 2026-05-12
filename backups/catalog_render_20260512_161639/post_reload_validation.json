@@ -1,0 +1,139 @@
+{
+  "deleted": {
+    "books": 0,
+    "works": 0,
+    "authors": 15,
+    "genres": 12,
+    "publishers": 12
+  },
+  "created_books": 21,
+  "published_books": 21,
+  "image_checks": [
+    {
+      "id": 109,
+      "nombre": "Aviadores",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/aviadores-maximiliano-diaz.jpg"
+    },
+    {
+      "id": 108,
+      "nombre": "The Name of the Wind",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/patrick-rothfuss-the-name-of-the-wind.jpg"
+    },
+    {
+      "id": 107,
+      "nombre": "A Game of Thrones",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/george-r-r-martin-a-game-of-thrones.jpg"
+    },
+    {
+      "id": 106,
+      "nombre": "Harry Potter and the Prisoner of Azkaban",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/j-k-rowling-harry-potter-and-the-prisoner-of-azkaban.jpg"
+    },
+    {
+      "id": 105,
+      "nombre": "Harry Potter and the Chamber of Secrets",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/j-k-rowling-harry-potter-and-the-chamber-of-secrets.jpg"
+    },
+    {
+      "id": 104,
+      "nombre": "Harry Potter and the Sorcerer's Stone",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/j-k-rowling-harry-potter-and-the-sorcerers-stone.jpg"
+    },
+    {
+      "id": 103,
+      "nombre": "The Return of the King",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/j-r-r-tolkien-the-return-of-the-king.jpg"
+    },
+    {
+      "id": 102,
+      "nombre": "The Two Towers",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/j-r-r-tolkien-the-two-towers.jpg"
+    },
+    {
+      "id": 101,
+      "nombre": "The Fellowship of the Ring",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/j-r-r-tolkien-the-fellowship-of-the-ring.jpg"
+    },
+    {
+      "id": 100,
+      "nombre": "The Hobbit",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/j-r-r-tolkien-the-hobbit.jpg"
+    },
+    {
+      "id": 99,
+      "nombre": "Dune",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/frank-herbert-dune.jpg"
+    },
+    {
+      "id": 98,
+      "nombre": "Brave New World",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/aldous-huxley-brave-new-world.jpg"
+    },
+    {
+      "id": 97,
+      "nombre": "Fahrenheit 451",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/ray-bradbury-fahrenheit-451.jpg"
+    },
+    {
+      "id": 96,
+      "nombre": "The Catcher in the Rye",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/j-d-salinger-the-catcher-in-the-rye.jpg"
+    },
+    {
+      "id": 95,
+      "nombre": "To Kill a Mockingbird",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/harper-lee-to-kill-a-mockingbird.jpg"
+    },
+    {
+      "id": 94,
+      "nombre": "The Great Gatsby",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/f-scott-fitzgerald-the-great-gatsby.jpg"
+    },
+    {
+      "id": 93,
+      "nombre": "Wuthering Heights",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/emily-bronte-wuthering-heights.jpg"
+    },
+    {
+      "id": 92,
+      "nombre": "Jane Eyre",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/charlotte-bronte-jane-eyre.jpg"
+    },
+    {
+      "id": 91,
+      "nombre": "Pride and Prejudice",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/jane-austen-pride-and-prejudice.jpg"
+    },
+    {
+      "id": 90,
+      "nombre": "Animal Farm",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/george-orwell-animal-farm.jpg"
+    },
+    {
+      "id": 89,
+      "nombre": "1984",
+      "status": 200,
+      "url": "https://backend-esperpentia-prod.onrender.com/media/libros/2026/05/george-orwell-1984.jpg"
+    }
+  ]
+}

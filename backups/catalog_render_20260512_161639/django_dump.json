@@ -1,0 +1,2054 @@
+[
+{
+  "model": "productos.autor",
+  "pk": 64,
+  "fields": {
+    "nombre": "Aldous Huxley",
+    "slug": "aldous-huxley",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'Brave New World'.",
+    "creado_en": "2026-04-26T15:57:17.699Z",
+    "actualizado_en": "2026-04-26T15:57:17.699Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 58,
+  "fields": {
+    "nombre": "Charlotte Bronte",
+    "slug": "charlotte-bronte",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'Jane Eyre'.",
+    "creado_en": "2026-04-26T15:56:48.908Z",
+    "actualizado_en": "2026-04-26T15:56:48.908Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 59,
+  "fields": {
+    "nombre": "Emily Bronte",
+    "slug": "emily-bronte",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'Wuthering Heights'.",
+    "creado_en": "2026-04-26T15:56:54.138Z",
+    "actualizado_en": "2026-04-26T15:56:54.138Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 60,
+  "fields": {
+    "nombre": "F. Scott Fitzgerald",
+    "slug": "f-scott-fitzgerald",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'The Great Gatsby'.",
+    "creado_en": "2026-04-26T15:56:58.318Z",
+    "actualizado_en": "2026-04-26T15:56:58.318Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 65,
+  "fields": {
+    "nombre": "Frank Herbert",
+    "slug": "frank-herbert",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'Dune'.",
+    "creado_en": "2026-04-26T15:57:21.959Z",
+    "actualizado_en": "2026-04-26T15:57:21.959Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 56,
+  "fields": {
+    "nombre": "George Orwell",
+    "slug": "george-orwell",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra '1984'.",
+    "creado_en": "2026-04-26T15:56:35.452Z",
+    "actualizado_en": "2026-04-26T15:56:35.452Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 68,
+  "fields": {
+    "nombre": "George R. R. Martin",
+    "slug": "george-r-r-martin",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'A Game of Thrones'.",
+    "creado_en": "2026-04-26T15:57:54.951Z",
+    "actualizado_en": "2026-04-26T15:57:54.951Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 61,
+  "fields": {
+    "nombre": "Harper Lee",
+    "slug": "harper-lee",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'To Kill a Mockingbird'.",
+    "creado_en": "2026-04-26T15:57:03.290Z",
+    "actualizado_en": "2026-04-26T15:57:03.290Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 62,
+  "fields": {
+    "nombre": "J. D. Salinger",
+    "slug": "j-d-salinger",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'The Catcher in the Rye'.",
+    "creado_en": "2026-04-26T15:57:07.125Z",
+    "actualizado_en": "2026-04-26T15:57:07.125Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 67,
+  "fields": {
+    "nombre": "J. K. Rowling",
+    "slug": "j-k-rowling",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'Harry Potter and the Sorcerer's Stone'.",
+    "creado_en": "2026-04-26T15:57:42.736Z",
+    "actualizado_en": "2026-04-26T15:57:42.736Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 66,
+  "fields": {
+    "nombre": "J. R. R. Tolkien",
+    "slug": "j-r-r-tolkien",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'The Hobbit'.",
+    "creado_en": "2026-04-26T15:57:26.888Z",
+    "actualizado_en": "2026-04-26T15:57:26.888Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 57,
+  "fields": {
+    "nombre": "Jane Austen",
+    "slug": "jane-austen",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'Pride and Prejudice'.",
+    "creado_en": "2026-04-26T15:56:43.480Z",
+    "actualizado_en": "2026-04-26T15:56:43.480Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 70,
+  "fields": {
+    "nombre": "Maximiliano Díaz",
+    "slug": "maximiliano-diaz",
+    "imagen": "",
+    "fecha_nacimiento": "1960-12-21",
+    "nacionalidad": "",
+    "biografia": "",
+    "creado_en": "2026-04-28T02:20:11.082Z",
+    "actualizado_en": "2026-04-28T02:20:11.082Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 69,
+  "fields": {
+    "nombre": "Patrick Rothfuss",
+    "slug": "patrick-rothfuss",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'The Name of the Wind'.",
+    "creado_en": "2026-04-26T15:58:00.134Z",
+    "actualizado_en": "2026-04-26T15:58:00.134Z"
+  }
+},
+{
+  "model": "productos.autor",
+  "pk": 63,
+  "fields": {
+    "nombre": "Ray Bradbury",
+    "slug": "ray-bradbury",
+    "imagen": "",
+    "fecha_nacimiento": null,
+    "nacionalidad": "",
+    "biografia": "Autor/a real de la obra 'Fahrenheit 451'.",
+    "creado_en": "2026-04-26T15:57:12.238Z",
+    "actualizado_en": "2026-04-26T15:57:12.238Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 23,
+  "fields": {
+    "nombre": "Ciencia ficcion",
+    "slug": "ciencia-ficcion",
+    "descripcion": "Genero literario: Ciencia ficcion",
+    "creado_en": "2026-04-26T15:57:12.834Z",
+    "actualizado_en": "2026-04-26T15:57:12.834Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 20,
+  "fields": {
+    "nombre": "Clasico",
+    "slug": "clasico",
+    "descripcion": "Genero literario: Clasico",
+    "creado_en": "2026-04-26T15:56:49.512Z",
+    "actualizado_en": "2026-04-26T15:56:49.512Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 22,
+  "fields": {
+    "nombre": "Coming of age",
+    "slug": "coming-of-age",
+    "descripcion": "Genero literario: Coming of age",
+    "creado_en": "2026-04-26T15:57:07.724Z",
+    "actualizado_en": "2026-04-26T15:57:07.724Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 28,
+  "fields": {
+    "nombre": "Cuento",
+    "slug": "cuento",
+    "descripcion": "",
+    "creado_en": "2026-04-30T18:15:29.560Z",
+    "actualizado_en": "2026-04-30T18:15:29.560Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 17,
+  "fields": {
+    "nombre": "Distopia",
+    "slug": "distopia",
+    "descripcion": "Genero literario: Distopia",
+    "creado_en": "2026-04-26T15:56:36.094Z",
+    "actualizado_en": "2026-04-26T15:56:36.094Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 21,
+  "fields": {
+    "nombre": "Drama",
+    "slug": "drama",
+    "descripcion": "Genero literario: Drama",
+    "creado_en": "2026-04-26T15:57:03.882Z",
+    "actualizado_en": "2026-04-26T15:57:03.882Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 24,
+  "fields": {
+    "nombre": "Fantasia",
+    "slug": "fantasia",
+    "descripcion": "Genero literario: Fantasia",
+    "creado_en": "2026-04-26T15:57:27.489Z",
+    "actualizado_en": "2026-04-26T15:57:27.489Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 26,
+  "fields": {
+    "nombre": "Fantasia epica",
+    "slug": "fantasia-epica",
+    "descripcion": "Genero literario: Fantasia epica",
+    "creado_en": "2026-04-26T15:57:55.545Z",
+    "actualizado_en": "2026-04-26T15:57:55.545Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 25,
+  "fields": {
+    "nombre": "Fantasia juvenil",
+    "slug": "fantasia-juvenil",
+    "descripcion": "Genero literario: Fantasia juvenil",
+    "creado_en": "2026-04-26T15:57:43.334Z",
+    "actualizado_en": "2026-04-26T15:57:43.334Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 19,
+  "fields": {
+    "nombre": "Novela romantica",
+    "slug": "novela-romantica",
+    "descripcion": "Genero literario: Novela romantica",
+    "creado_en": "2026-04-26T15:56:44.094Z",
+    "actualizado_en": "2026-04-26T15:56:44.094Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 27,
+  "fields": {
+    "nombre": "Poesía",
+    "slug": "poesia",
+    "descripcion": "",
+    "creado_en": "2026-04-28T02:20:55.024Z",
+    "actualizado_en": "2026-04-28T02:20:55.024Z"
+  }
+},
+{
+  "model": "productos.genero",
+  "pk": 18,
+  "fields": {
+    "nombre": "Satira politica",
+    "slug": "satira-politica",
+    "descripcion": "Genero literario: Satira politica",
+    "creado_en": "2026-04-26T15:56:40.924Z",
+    "actualizado_en": "2026-04-26T15:56:40.924Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 25,
+  "fields": {
+    "nombre": "Ace",
+    "slug": "ace",
+    "imagen": "",
+    "descripcion": "Editorial real para 'Dune'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:57:22.712Z",
+    "actualizado_en": "2026-04-26T15:57:22.712Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 28,
+  "fields": {
+    "nombre": "Bantam",
+    "slug": "bantam",
+    "imagen": "",
+    "descripcion": "Editorial real para 'A Game of Thrones'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:57:56.156Z",
+    "actualizado_en": "2026-04-26T15:57:56.156Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 29,
+  "fields": {
+    "nombre": "DAW",
+    "slug": "daw",
+    "imagen": "",
+    "descripcion": "Editorial real para 'The Name of the Wind'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:58:00.876Z",
+    "actualizado_en": "2026-04-26T15:58:00.876Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 30,
+  "fields": {
+    "nombre": "Esperpentia",
+    "slug": "esperpentia",
+    "imagen": "",
+    "descripcion": "",
+    "sitio_web": "",
+    "creado_en": "2026-04-28T02:20:26.895Z",
+    "actualizado_en": "2026-04-28T02:20:26.895Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 22,
+  "fields": {
+    "nombre": "Harper Perennial",
+    "slug": "harper-perennial",
+    "imagen": "",
+    "descripcion": "Editorial real para 'To Kill a Mockingbird'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:57:04.487Z",
+    "actualizado_en": "2026-04-26T15:57:04.487Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 23,
+  "fields": {
+    "nombre": "Little, Brown and Company",
+    "slug": "little-brown-and-company",
+    "imagen": "",
+    "descripcion": "Editorial real para 'The Catcher in the Rye'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:57:08.328Z",
+    "actualizado_en": "2026-04-26T15:57:08.328Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 26,
+  "fields": {
+    "nombre": "Mariner Books",
+    "slug": "mariner-books",
+    "imagen": "",
+    "descripcion": "Editorial real para 'The Hobbit'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:57:28.087Z",
+    "actualizado_en": "2026-04-26T15:57:28.087Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 20,
+  "fields": {
+    "nombre": "Penguin Classics",
+    "slug": "penguin-classics",
+    "imagen": "",
+    "descripcion": "Editorial real para 'Pride and Prejudice'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:56:44.692Z",
+    "actualizado_en": "2026-04-26T15:56:44.692Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 27,
+  "fields": {
+    "nombre": "Scholastic",
+    "slug": "scholastic",
+    "imagen": "",
+    "descripcion": "Editorial real para 'Harry Potter and the Sorcerer's Stone'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:57:43.931Z",
+    "actualizado_en": "2026-04-26T15:57:43.931Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 21,
+  "fields": {
+    "nombre": "Scribner",
+    "slug": "scribner",
+    "imagen": "",
+    "descripcion": "Editorial real para 'The Great Gatsby'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:56:59.064Z",
+    "actualizado_en": "2026-04-26T15:56:59.064Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 19,
+  "fields": {
+    "nombre": "Signet Classics",
+    "slug": "signet-classics",
+    "imagen": "",
+    "descripcion": "Editorial real para '1984'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:56:36.696Z",
+    "actualizado_en": "2026-04-26T15:56:36.696Z"
+  }
+},
+{
+  "model": "productos.editorial",
+  "pk": 24,
+  "fields": {
+    "nombre": "Simon & Schuster",
+    "slug": "simon-schuster",
+    "imagen": "",
+    "descripcion": "Editorial real para 'Fahrenheit 451'.",
+    "sitio_web": "",
+    "creado_en": "2026-04-26T15:57:13.433Z",
+    "actualizado_en": "2026-04-26T15:57:13.433Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 118,
+  "fields": {
+    "titulo": "1984",
+    "slug": "1984-george-orwell",
+    "autor": 56,
+    "genero": 17,
+    "descripcion": "Una novela clasica sobre vigilancia estatal y control totalitario.",
+    "descripcion_corta": "Una novela clasica sobre vigilancia estatal y control totalitario.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:56:37.300Z",
+    "actualizado_en": "2026-04-26T15:56:37.300Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 136,
+  "fields": {
+    "titulo": "A Game of Thrones",
+    "slug": "a-game-of-thrones-george-r-r-martin",
+    "autor": 68,
+    "genero": 26,
+    "descripcion": "Primera novela de Cancion de Hielo y Fuego.",
+    "descripcion_corta": "Primera novela de Cancion de Hielo y Fuego.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:56.749Z",
+    "actualizado_en": "2026-04-26T15:57:56.749Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 119,
+  "fields": {
+    "titulo": "Animal Farm",
+    "slug": "animal-farm-george-orwell",
+    "autor": 56,
+    "genero": 18,
+    "descripcion": "Fabula politica sobre poder, propaganda y corrupcion.",
+    "descripcion_corta": "Fabula politica sobre poder, propaganda y corrupcion.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:56:41.664Z",
+    "actualizado_en": "2026-04-26T15:56:41.664Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 138,
+  "fields": {
+    "titulo": "Aviadores",
+    "slug": "aviadores-poesia",
+    "autor": 70,
+    "genero": 27,
+    "descripcion": "",
+    "descripcion_corta": "",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-28T02:21:20.123Z",
+    "actualizado_en": "2026-04-28T02:21:20.123Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 127,
+  "fields": {
+    "titulo": "Brave New World",
+    "slug": "brave-new-world-aldous-huxley",
+    "autor": 64,
+    "genero": 17,
+    "descripcion": "Mundo futurista dominado por tecnologia y condicionamiento social.",
+    "descripcion_corta": "Mundo futurista dominado por tecnologia y condicionamiento social.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:18.601Z",
+    "actualizado_en": "2026-04-26T15:57:18.601Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 128,
+  "fields": {
+    "titulo": "Dune",
+    "slug": "dune-frank-herbert",
+    "autor": 65,
+    "genero": 23,
+    "descripcion": "Epic fantasy sci-fi sobre politica, ecologia y destino.",
+    "descripcion_corta": "Epic fantasy sci-fi sobre politica, ecologia y destino.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:23.309Z",
+    "actualizado_en": "2026-04-26T15:57:23.309Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 126,
+  "fields": {
+    "titulo": "Fahrenheit 451",
+    "slug": "fahrenheit-451-ray-bradbury",
+    "autor": 63,
+    "genero": 23,
+    "descripcion": "Distopia sobre censura y destruccion del pensamiento critico.",
+    "descripcion_corta": "Distopia sobre censura y destruccion del pensamiento critico.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:14.032Z",
+    "actualizado_en": "2026-04-26T15:57:14.032Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 134,
+  "fields": {
+    "titulo": "Harry Potter and the Chamber of Secrets",
+    "slug": "harry-potter-and-the-chamber-of-secrets-j-k-rowling",
+    "autor": 67,
+    "genero": 25,
+    "descripcion": "Segunda entrega de la saga de Harry Potter.",
+    "descripcion_corta": "Segunda entrega de la saga de Harry Potter.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:47.032Z",
+    "actualizado_en": "2026-04-26T15:57:47.032Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 135,
+  "fields": {
+    "titulo": "Harry Potter and the Prisoner of Azkaban",
+    "slug": "harry-potter-and-the-prisoner-of-azkaban-j-k-rowling",
+    "autor": 67,
+    "genero": 25,
+    "descripcion": "Tercera novela de la saga de Harry Potter.",
+    "descripcion_corta": "Tercera novela de la saga de Harry Potter.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:51.320Z",
+    "actualizado_en": "2026-04-26T15:57:51.320Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 133,
+  "fields": {
+    "titulo": "Harry Potter and the Sorcerer's Stone",
+    "slug": "harry-potter-and-the-sorcerers-stone-j-k-rowling",
+    "autor": 67,
+    "genero": 25,
+    "descripcion": "Inicio de la saga de magia mas popular de las ultimas decadas.",
+    "descripcion_corta": "Inicio de la saga de magia mas popular de las ultimas decadas.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:44.529Z",
+    "actualizado_en": "2026-04-26T15:57:44.529Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 121,
+  "fields": {
+    "titulo": "Jane Eyre",
+    "slug": "jane-eyre-charlotte-bronte",
+    "autor": 58,
+    "genero": 20,
+    "descripcion": "Historia de independencia, amor y formacion personal.",
+    "descripcion_corta": "Historia de independencia, amor y formacion personal.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:56:50.266Z",
+    "actualizado_en": "2026-04-26T15:56:50.266Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 120,
+  "fields": {
+    "titulo": "Pride and Prejudice",
+    "slug": "pride-and-prejudice-jane-austen",
+    "autor": 57,
+    "genero": 19,
+    "descripcion": "Una de las novelas mas influyentes de la literatura inglesa.",
+    "descripcion_corta": "Una de las novelas mas influyentes de la literatura inglesa.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:56:45.289Z",
+    "actualizado_en": "2026-04-26T15:56:45.289Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 125,
+  "fields": {
+    "titulo": "The Catcher in the Rye",
+    "slug": "the-catcher-in-the-rye-j-d-salinger",
+    "autor": 62,
+    "genero": 22,
+    "descripcion": "Clasico moderno narrado por un adolescente inconforme.",
+    "descripcion_corta": "Clasico moderno narrado por un adolescente inconforme.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:08.924Z",
+    "actualizado_en": "2026-04-26T15:57:08.924Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 130,
+  "fields": {
+    "titulo": "The Fellowship of the Ring",
+    "slug": "the-fellowship-of-the-ring-j-r-r-tolkien",
+    "autor": 66,
+    "genero": 24,
+    "descripcion": "Primera parte de la trilogia El Senor de los Anillos.",
+    "descripcion_corta": "Primera parte de la trilogia El Senor de los Anillos.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:32.862Z",
+    "actualizado_en": "2026-04-26T15:57:32.862Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 123,
+  "fields": {
+    "titulo": "The Great Gatsby",
+    "slug": "the-great-gatsby-f-scott-fitzgerald",
+    "autor": 60,
+    "genero": 20,
+    "descripcion": "Retrato de la sociedad norteamericana de los anos 20.",
+    "descripcion_corta": "Retrato de la sociedad norteamericana de los anos 20.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:56:59.664Z",
+    "actualizado_en": "2026-04-26T15:56:59.664Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 129,
+  "fields": {
+    "titulo": "The Hobbit",
+    "slug": "the-hobbit-j-r-r-tolkien",
+    "autor": 66,
+    "genero": 24,
+    "descripcion": "Aventura fantastica que precede a El Senor de los Anillos.",
+    "descripcion_corta": "Aventura fantastica que precede a El Senor de los Anillos.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:28.680Z",
+    "actualizado_en": "2026-04-26T15:57:28.680Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 137,
+  "fields": {
+    "titulo": "The Name of the Wind",
+    "slug": "the-name-of-the-wind-patrick-rothfuss",
+    "autor": 69,
+    "genero": 24,
+    "descripcion": "Primera parte de Cronica del Asesino de Reyes.",
+    "descripcion_corta": "Primera parte de Cronica del Asesino de Reyes.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:58:01.477Z",
+    "actualizado_en": "2026-04-26T15:58:01.477Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 132,
+  "fields": {
+    "titulo": "The Return of the King",
+    "slug": "the-return-of-the-king-j-r-r-tolkien",
+    "autor": 66,
+    "genero": 24,
+    "descripcion": "Cierre epico de la trilogia El Senor de los Anillos.",
+    "descripcion_corta": "Cierre epico de la trilogia El Senor de los Anillos.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:39.382Z",
+    "actualizado_en": "2026-04-26T15:57:39.382Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 131,
+  "fields": {
+    "titulo": "The Two Towers",
+    "slug": "the-two-towers-j-r-r-tolkien",
+    "autor": 66,
+    "genero": 24,
+    "descripcion": "Segunda parte de la trilogia El Senor de los Anillos.",
+    "descripcion_corta": "Segunda parte de la trilogia El Senor de los Anillos.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:36.866Z",
+    "actualizado_en": "2026-04-26T15:57:36.866Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 124,
+  "fields": {
+    "titulo": "To Kill a Mockingbird",
+    "slug": "to-kill-a-mockingbird-harper-lee",
+    "autor": 61,
+    "genero": 21,
+    "descripcion": "Novela sobre justicia, racismo y crecimiento moral.",
+    "descripcion_corta": "Novela sobre justicia, racismo y crecimiento moral.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:57:05.083Z",
+    "actualizado_en": "2026-04-26T15:57:05.083Z"
+  }
+},
+{
+  "model": "productos.obra",
+  "pk": 122,
+  "fields": {
+    "titulo": "Wuthering Heights",
+    "slug": "wuthering-heights-emily-bronte",
+    "autor": 59,
+    "genero": 20,
+    "descripcion": "Relato oscuro e intenso sobre pasion y venganza.",
+    "descripcion_corta": "Relato oscuro e intenso sobre pasion y venganza.",
+    "fecha_publicacion": null,
+    "creado_en": "2026-04-26T15:56:55.038Z",
+    "actualizado_en": "2026-04-26T15:56:55.038Z"
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 88,
+  "fields": {
+    "nombre": "Aviadores",
+    "slug": "aviadores-esperpentia",
+    "sku": "12312343124",
+    "imagen": "libros/2026/04/aviadores-maximiliano-diaz.jpg",
+    "descripcion": "",
+    "descripcion_corta": "",
+    "precio": "8990",
+    "precio_referencia": "8990",
+    "moneda": "CLP",
+    "stock": 100,
+    "gestionar_stock": true,
+    "peso_kg": null,
+    "alto_cm": null,
+    "ancho_cm": null,
+    "largo_cm": null,
+    "activo": true,
+    "destacado": true,
+    "creado_en": "2026-04-28T02:26:18.552Z",
+    "actualizado_en": "2026-04-30T18:21:36.463Z",
+    "obra": 138,
+    "editorial": 30,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 100,
+    "isbn": "",
+    "idioma": "es",
+    "anio_publicacion": null
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 87,
+  "fields": {
+    "nombre": "The Name of the Wind",
+    "slug": "the-name-of-the-wind-404741",
+    "sku": "REAL-0020",
+    "imagen": "libros/2026/04/seed/patrick-rothfuss-the-name-of-the-wind.jpg",
+    "descripcion": "Primera parte de Cronica del Asesino de Reyes.",
+    "descripcion_corta": "Primera parte de Cronica del Asesino de Reyes.",
+    "precio": "24990",
+    "precio_referencia": "24990",
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": false,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:58:01.778Z",
+    "actualizado_en": "2026-04-28T15:54:56.701Z",
+    "obra": 137,
+    "editorial": 29,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 672,
+    "isbn": "9780756404741",
+    "idioma": "en",
+    "anio_publicacion": 2008
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 86,
+  "fields": {
+    "nombre": "A Game of Thrones",
+    "slug": "a-game-of-thrones-593716",
+    "sku": "REAL-0019",
+    "imagen": "libros/2026/04/seed/george-r-r-martin-a-game-of-thrones.jpg",
+    "descripcion": "Primera novela de Cancion de Hielo y Fuego.",
+    "descripcion_corta": "Primera novela de Cancion de Hielo y Fuego.",
+    "precio": "24490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:57.051Z",
+    "actualizado_en": "2026-04-26T15:57:59.680Z",
+    "obra": 136,
+    "editorial": 28,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 864,
+    "isbn": "9780553593716",
+    "idioma": "en",
+    "anio_publicacion": 2005
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 85,
+  "fields": {
+    "nombre": "Harry Potter and the Prisoner of Azkaban",
+    "slug": "harry-potter-and-the-prisoner-of-azkaban-136365",
+    "sku": "REAL-0018",
+    "imagen": "libros/2026/04/seed/j-k-rowling-harry-potter-and-the-prisoner-of-azkaban.jpg",
+    "descripcion": "Tercera novela de la saga de Harry Potter.",
+    "descripcion_corta": "Tercera novela de la saga de Harry Potter.",
+    "precio": "23990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:51.618Z",
+    "actualizado_en": "2026-04-26T15:57:54.498Z",
+    "obra": 135,
+    "editorial": 27,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 448,
+    "isbn": "9780439136365",
+    "idioma": "en",
+    "anio_publicacion": 1999
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 84,
+  "fields": {
+    "nombre": "Harry Potter and the Chamber of Secrets",
+    "slug": "harry-potter-and-the-chamber-of-secrets-064873",
+    "sku": "REAL-0017",
+    "imagen": "libros/2026/04/seed/j-k-rowling-harry-potter-and-the-chamber-of-secrets.jpg",
+    "descripcion": "Segunda entrega de la saga de Harry Potter.",
+    "descripcion_corta": "Segunda entrega de la saga de Harry Potter.",
+    "precio": "23490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:47.329Z",
+    "actualizado_en": "2026-04-26T15:57:50.408Z",
+    "obra": 134,
+    "editorial": 27,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 352,
+    "isbn": "9780439064873",
+    "idioma": "en",
+    "anio_publicacion": 1999
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 83,
+  "fields": {
+    "nombre": "Harry Potter and the Sorcerer's Stone",
+    "slug": "harry-potter-and-the-sorcerers-stone-353427",
+    "sku": "REAL-0016",
+    "imagen": "libros/2026/04/seed/j-k-rowling-harry-potter-and-the-sorcerers-stone.jpg",
+    "descripcion": "Inicio de la saga de magia mas popular de las ultimas decadas.",
+    "descripcion_corta": "Inicio de la saga de magia mas popular de las ultimas decadas.",
+    "precio": "22990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:44.826Z",
+    "actualizado_en": "2026-04-26T15:57:46.119Z",
+    "obra": 133,
+    "editorial": 27,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 320,
+    "isbn": "9780590353427",
+    "idioma": "en",
+    "anio_publicacion": 1998
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 82,
+  "fields": {
+    "nombre": "The Return of the King",
+    "slug": "the-return-of-the-king-928197",
+    "sku": "REAL-0015",
+    "imagen": "libros/2026/04/seed/j-r-r-tolkien-the-return-of-the-king.jpg",
+    "descripcion": "Cierre epico de la trilogia El Senor de los Anillos.",
+    "descripcion_corta": "Cierre epico de la trilogia El Senor de los Anillos.",
+    "precio": "22490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:39.683Z",
+    "actualizado_en": "2026-04-26T15:57:42.283Z",
+    "obra": 132,
+    "editorial": 26,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 432,
+    "isbn": "9780547928197",
+    "idioma": "en",
+    "anio_publicacion": 2012
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 81,
+  "fields": {
+    "nombre": "The Two Towers",
+    "slug": "the-two-towers-928203",
+    "sku": "REAL-0014",
+    "imagen": "libros/2026/04/seed/j-r-r-tolkien-the-two-towers.jpg",
+    "descripcion": "Segunda parte de la trilogia El Senor de los Anillos.",
+    "descripcion_corta": "Segunda parte de la trilogia El Senor de los Anillos.",
+    "precio": "21990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:37.167Z",
+    "actualizado_en": "2026-04-26T15:57:38.464Z",
+    "obra": 131,
+    "editorial": 26,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 352,
+    "isbn": "9780547928203",
+    "idioma": "en",
+    "anio_publicacion": 2012
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 80,
+  "fields": {
+    "nombre": "The Fellowship of the Ring",
+    "slug": "the-fellowship-of-the-ring-928210",
+    "sku": "REAL-0013",
+    "imagen": "libros/2026/04/seed/j-r-r-tolkien-the-fellowship-of-the-ring.jpg",
+    "descripcion": "Primera parte de la trilogia El Senor de los Anillos.",
+    "descripcion_corta": "Primera parte de la trilogia El Senor de los Anillos.",
+    "precio": "21490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:33.160Z",
+    "actualizado_en": "2026-04-26T15:57:35.960Z",
+    "obra": 130,
+    "editorial": 26,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 432,
+    "isbn": "9780547928210",
+    "idioma": "en",
+    "anio_publicacion": 2012
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 79,
+  "fields": {
+    "nombre": "The Hobbit",
+    "slug": "the-hobbit-928227",
+    "sku": "REAL-0012",
+    "imagen": "libros/2026/04/seed/j-r-r-tolkien-the-hobbit.jpg",
+    "descripcion": "Aventura fantastica que precede a El Senor de los Anillos.",
+    "descripcion_corta": "Aventura fantastica que precede a El Senor de los Anillos.",
+    "precio": "20990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:28.977Z",
+    "actualizado_en": "2026-04-26T15:57:31.960Z",
+    "obra": 129,
+    "editorial": 26,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 300,
+    "isbn": "9780547928227",
+    "idioma": "en",
+    "anio_publicacion": 2012
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 78,
+  "fields": {
+    "nombre": "Dune",
+    "slug": "dune-172719",
+    "sku": "REAL-0011",
+    "imagen": "libros/2026/04/seed/frank-herbert-dune.jpg",
+    "descripcion": "Epic fantasy sci-fi sobre politica, ecologia y destino.",
+    "descripcion_corta": "Epic fantasy sci-fi sobre politica, ecologia y destino.",
+    "precio": "20490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:23.613Z",
+    "actualizado_en": "2026-04-26T15:57:26.435Z",
+    "obra": 128,
+    "editorial": 25,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 896,
+    "isbn": "9780441172719",
+    "idioma": "en",
+    "anio_publicacion": 1990
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 77,
+  "fields": {
+    "nombre": "Brave New World",
+    "slug": "brave-new-world-850524",
+    "sku": "REAL-0010",
+    "imagen": "libros/2026/04/seed/aldous-huxley-brave-new-world.jpg",
+    "descripcion": "Mundo futurista dominado por tecnologia y condicionamiento social.",
+    "descripcion_corta": "Mundo futurista dominado por tecnologia y condicionamiento social.",
+    "precio": "19990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:18.899Z",
+    "actualizado_en": "2026-04-26T15:57:21.499Z",
+    "obra": 127,
+    "editorial": 22,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 288,
+    "isbn": "9780060850524",
+    "idioma": "en",
+    "anio_publicacion": 2006
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 76,
+  "fields": {
+    "nombre": "Fahrenheit 451",
+    "slug": "fahrenheit-451-673319",
+    "sku": "REAL-0009",
+    "imagen": "libros/2026/04/seed/ray-bradbury-fahrenheit-451.jpg",
+    "descripcion": "Distopia sobre censura y destruccion del pensamiento critico.",
+    "descripcion_corta": "Distopia sobre censura y destruccion del pensamiento critico.",
+    "precio": "19490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:14.338Z",
+    "actualizado_en": "2026-04-26T15:57:17.246Z",
+    "obra": 126,
+    "editorial": 24,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 256,
+    "isbn": "9781451673319",
+    "idioma": "en",
+    "anio_publicacion": 2012
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 75,
+  "fields": {
+    "nombre": "The Catcher in the Rye",
+    "slug": "the-catcher-in-the-rye-769488",
+    "sku": "REAL-0008",
+    "imagen": "libros/2026/04/seed/j-d-salinger-the-catcher-in-the-rye.jpg",
+    "descripcion": "Clasico moderno narrado por un adolescente inconforme.",
+    "descripcion_corta": "Clasico moderno narrado por un adolescente inconforme.",
+    "precio": "18990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:09.223Z",
+    "actualizado_en": "2026-04-26T15:57:11.782Z",
+    "obra": 125,
+    "editorial": 23,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 277,
+    "isbn": "9780316769488",
+    "idioma": "en",
+    "anio_publicacion": 1991
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 74,
+  "fields": {
+    "nombre": "To Kill a Mockingbird",
+    "slug": "to-kill-a-mockingbird-120084",
+    "sku": "REAL-0007",
+    "imagen": "libros/2026/04/seed/harper-lee-to-kill-a-mockingbird.jpg",
+    "descripcion": "Novela sobre justicia, racismo y crecimiento moral.",
+    "descripcion_corta": "Novela sobre justicia, racismo y crecimiento moral.",
+    "precio": "18490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": false,
+    "creado_en": "2026-04-26T15:57:05.378Z",
+    "actualizado_en": "2026-04-26T15:57:06.667Z",
+    "obra": 124,
+    "editorial": 22,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 336,
+    "isbn": "9780061120084",
+    "idioma": "en",
+    "anio_publicacion": 2006
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 73,
+  "fields": {
+    "nombre": "The Great Gatsby",
+    "slug": "the-great-gatsby-273565",
+    "sku": "REAL-0006",
+    "imagen": "libros/2026/04/seed/f-scott-fitzgerald-the-great-gatsby.jpg",
+    "descripcion": "Retrato de la sociedad norteamericana de los anos 20.",
+    "descripcion_corta": "Retrato de la sociedad norteamericana de los anos 20.",
+    "precio": "17990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": true,
+    "creado_en": "2026-04-26T15:56:59.960Z",
+    "actualizado_en": "2026-04-26T15:57:02.832Z",
+    "obra": 123,
+    "editorial": 21,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 180,
+    "isbn": "9780743273565",
+    "idioma": "en",
+    "anio_publicacion": 2004
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 72,
+  "fields": {
+    "nombre": "Wuthering Heights",
+    "slug": "wuthering-heights-439556",
+    "sku": "REAL-0005",
+    "imagen": "libros/2026/04/seed/emily-bronte-wuthering-heights.jpg",
+    "descripcion": "Relato oscuro e intenso sobre pasion y venganza.",
+    "descripcion_corta": "Relato oscuro e intenso sobre pasion y venganza.",
+    "precio": "17490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": true,
+    "creado_en": "2026-04-26T15:56:55.339Z",
+    "actualizado_en": "2026-04-26T15:56:57.862Z",
+    "obra": 122,
+    "editorial": 20,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 416,
+    "isbn": "9780141439556",
+    "idioma": "en",
+    "anio_publicacion": 2003
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 71,
+  "fields": {
+    "nombre": "Jane Eyre",
+    "slug": "jane-eyre-437209",
+    "sku": "REAL-0004",
+    "imagen": "libros/2026/04/seed/charlotte-bronte-jane-eyre.jpg",
+    "descripcion": "Historia de independencia, amor y formacion personal.",
+    "descripcion_corta": "Historia de independencia, amor y formacion personal.",
+    "precio": "16990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": true,
+    "creado_en": "2026-04-26T15:56:50.566Z",
+    "actualizado_en": "2026-04-26T15:56:53.679Z",
+    "obra": 121,
+    "editorial": 20,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 624,
+    "isbn": "9780142437209",
+    "idioma": "en",
+    "anio_publicacion": 2006
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 70,
+  "fields": {
+    "nombre": "Pride and Prejudice",
+    "slug": "pride-and-prejudice-439518",
+    "sku": "REAL-0003",
+    "imagen": "libros/2026/04/seed/jane-austen-pride-and-prejudice.jpg",
+    "descripcion": "Una de las novelas mas influyentes de la literatura inglesa.",
+    "descripcion_corta": "Una de las novelas mas influyentes de la literatura inglesa.",
+    "precio": "16490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": true,
+    "creado_en": "2026-04-26T15:56:45.590Z",
+    "actualizado_en": "2026-04-26T15:56:48.441Z",
+    "obra": 120,
+    "editorial": 20,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 480,
+    "isbn": "9780141439518",
+    "idioma": "en",
+    "anio_publicacion": 2002
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 69,
+  "fields": {
+    "nombre": "Animal Farm",
+    "slug": "animal-farm-526342",
+    "sku": "REAL-0002",
+    "imagen": "libros/2026/04/seed/george-orwell-animal-farm.jpg",
+    "descripcion": "Fabula politica sobre poder, propaganda y corrupcion.",
+    "descripcion_corta": "Fabula politica sobre poder, propaganda y corrupcion.",
+    "precio": "15990",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": true,
+    "creado_en": "2026-04-26T15:56:41.969Z",
+    "actualizado_en": "2026-04-26T15:56:43.028Z",
+    "obra": 119,
+    "editorial": 19,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 112,
+    "isbn": "9780451526342",
+    "idioma": "en",
+    "anio_publicacion": 1954
+  }
+},
+{
+  "model": "productos.libro",
+  "pk": 68,
+  "fields": {
+    "nombre": "1984",
+    "slug": "1984-524935",
+    "sku": "REAL-0001",
+    "imagen": "libros/2026/04/seed/george-orwell-1984.jpg",
+    "descripcion": "Una novela clasica sobre vigilancia estatal y control totalitario.",
+    "descripcion_corta": "Una novela clasica sobre vigilancia estatal y control totalitario.",
+    "precio": "15490",
+    "precio_referencia": null,
+    "moneda": "CLP",
+    "stock": 30,
+    "gestionar_stock": true,
+    "peso_kg": "0.450",
+    "alto_cm": "23.00",
+    "ancho_cm": "15.00",
+    "largo_cm": "3.00",
+    "activo": true,
+    "destacado": true,
+    "creado_en": "2026-04-26T15:56:37.602Z",
+    "actualizado_en": "2026-04-26T15:56:40.317Z",
+    "obra": 118,
+    "editorial": 19,
+    "tipo_tapa": "BLANDA",
+    "cantidad_paginas": 328,
+    "isbn": "9780451524935",
+    "idioma": "en",
+    "anio_publicacion": 1950
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 70,
+  "fields": {
+    "cart": "8f551190-5a2f-46a1-8b0b-4d2a2c18a0cf",
+    "book": 86,
+    "quantity": 1,
+    "unit_price_snapshot": "24490",
+    "subtotal": "24490",
+    "metadata_snapshot": {
+      "isbn": "9780553593716",
+      "obra": {
+        "id": 136,
+        "autor": "George R. R. Martin",
+        "genero": "Fantasia epica",
+        "titulo": "A Game of Thrones"
+      },
+      "idioma": "en",
+      "libro_id": 86,
+      "editorial": "Bantam",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-04-26T16:35:05.758Z",
+    "updated_at": "2026-04-26T16:35:05.758Z"
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 71,
+  "fields": {
+    "cart": "f2ed2afd-7ab1-4372-82ae-a98a2380cd00",
+    "book": 71,
+    "quantity": 1,
+    "unit_price_snapshot": "16990",
+    "subtotal": "16990",
+    "metadata_snapshot": {
+      "isbn": "9780142437209",
+      "obra": {
+        "id": 121,
+        "autor": "Charlotte Bronte",
+        "genero": "Clasico",
+        "titulo": "Jane Eyre"
+      },
+      "idioma": "en",
+      "libro_id": 71,
+      "editorial": "Penguin Classics",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-04-27T14:53:58.217Z",
+    "updated_at": "2026-04-27T14:53:58.217Z"
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 72,
+  "fields": {
+    "cart": "b4c0bcaa-d3ef-4f01-ba21-8fbb26889f6a",
+    "book": 86,
+    "quantity": 1,
+    "unit_price_snapshot": "24490",
+    "subtotal": "24490",
+    "metadata_snapshot": {
+      "isbn": "9780553593716",
+      "obra": {
+        "id": 136,
+        "autor": "George R. R. Martin",
+        "genero": "Fantasia epica",
+        "titulo": "A Game of Thrones"
+      },
+      "idioma": "en",
+      "libro_id": 86,
+      "editorial": "Bantam",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-04-27T15:41:01.884Z",
+    "updated_at": "2026-04-27T15:41:01.884Z"
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 73,
+  "fields": {
+    "cart": "03bc433c-f8f9-495c-9758-b7fadfb10931",
+    "book": 86,
+    "quantity": 1,
+    "unit_price_snapshot": "24490",
+    "subtotal": "24490",
+    "metadata_snapshot": {
+      "isbn": "9780553593716",
+      "obra": {
+        "id": 136,
+        "autor": "George R. R. Martin",
+        "genero": "Fantasia epica",
+        "titulo": "A Game of Thrones"
+      },
+      "idioma": "en",
+      "libro_id": 86,
+      "editorial": "Bantam",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-04-27T20:15:43.425Z",
+    "updated_at": "2026-04-27T20:15:43.425Z"
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 74,
+  "fields": {
+    "cart": "1ab1de88-f2cf-493a-8f8b-e92b72299552",
+    "book": 87,
+    "quantity": 1,
+    "unit_price_snapshot": "24990",
+    "subtotal": "24990",
+    "metadata_snapshot": {
+      "isbn": "9780756404741",
+      "obra": {
+        "id": 137,
+        "autor": "Patrick Rothfuss",
+        "genero": "Fantasia",
+        "titulo": "The Name of the Wind"
+      },
+      "idioma": "en",
+      "libro_id": 87,
+      "editorial": "DAW",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-04-27T23:59:18.455Z",
+    "updated_at": "2026-04-27T23:59:18.455Z"
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 75,
+  "fields": {
+    "cart": "ff96a947-1d80-4ee8-99bc-fb8eee4e3017",
+    "book": 85,
+    "quantity": 1,
+    "unit_price_snapshot": "23990",
+    "subtotal": "23990",
+    "metadata_snapshot": {
+      "isbn": "9780439136365",
+      "obra": {
+        "id": 135,
+        "autor": "J. K. Rowling",
+        "genero": "Fantasia juvenil",
+        "titulo": "Harry Potter and the Prisoner of Azkaban"
+      },
+      "idioma": "en",
+      "libro_id": 85,
+      "editorial": "Scholastic",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-04-28T16:00:10.261Z",
+    "updated_at": "2026-04-28T16:00:10.261Z"
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 76,
+  "fields": {
+    "cart": "1493f8ae-846f-4413-88ce-700e5eb5d1f8",
+    "book": 86,
+    "quantity": 1,
+    "unit_price_snapshot": "24490",
+    "subtotal": "24490",
+    "metadata_snapshot": {
+      "isbn": "9780553593716",
+      "obra": {
+        "id": 136,
+        "autor": "George R. R. Martin",
+        "genero": "Fantasia epica",
+        "titulo": "A Game of Thrones"
+      },
+      "idioma": "en",
+      "libro_id": 86,
+      "editorial": "Bantam",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-04-30T18:08:45.820Z",
+    "updated_at": "2026-04-30T18:08:45.820Z"
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 78,
+  "fields": {
+    "cart": "7872070a-4a78-4f8d-a8ce-ea57f3ad9627",
+    "book": 73,
+    "quantity": 1,
+    "unit_price_snapshot": "17990",
+    "subtotal": "17990",
+    "metadata_snapshot": {
+      "isbn": "9780743273565",
+      "obra": {
+        "id": 123,
+        "autor": "F. Scott Fitzgerald",
+        "genero": "Clasico",
+        "titulo": "The Great Gatsby"
+      },
+      "idioma": "en",
+      "libro_id": 73,
+      "editorial": "Scribner",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-05-12T01:38:44.999Z",
+    "updated_at": "2026-05-12T01:38:44.999Z"
+  }
+},
+{
+  "model": "checkout.cartitem",
+  "pk": 79,
+  "fields": {
+    "cart": "aac2b025-a713-4c1b-9da0-b8abcc057421",
+    "book": 88,
+    "quantity": 1,
+    "unit_price_snapshot": "8990",
+    "subtotal": "8990",
+    "metadata_snapshot": {
+      "isbn": "",
+      "obra": {
+        "id": 138,
+        "autor": "Maximiliano Díaz",
+        "genero": "Poesía",
+        "titulo": "Aviadores"
+      },
+      "idioma": "es",
+      "libro_id": 88,
+      "editorial": "Esperpentia",
+      "tipo_tapa": "BLANDA"
+    },
+    "added_at": "2026-05-12T16:07:43.553Z",
+    "updated_at": "2026-05-12T16:07:43.553Z"
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 88,
+  "fields": {
+    "stock": 100,
+    "reserved_stock": 0,
+    "updated_at": "2026-05-12T01:38:16.051Z"
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 87,
+  "fields": {
+    "stock": 29,
+    "reserved_stock": 0,
+    "updated_at": "2026-04-28T00:00:00.224Z"
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 86,
+  "fields": {
+    "stock": 26,
+    "reserved_stock": 0,
+    "updated_at": "2026-04-30T18:09:33.079Z"
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 85,
+  "fields": {
+    "stock": 29,
+    "reserved_stock": 0,
+    "updated_at": "2026-04-28T16:01:20.511Z"
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 73,
+  "fields": {
+    "stock": 30,
+    "reserved_stock": 0,
+    "updated_at": "2026-05-12T01:38:44.992Z"
+  }
+},
+{
+  "model": "inventory.inventoryitem",
+  "pk": 71,
+  "fields": {
+    "stock": 29,
+    "reserved_stock": 0,
+    "updated_at": "2026-04-27T14:54:47.030Z"
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 1,
+  "fields": {
+    "venta": "b6697b39-5d20-4669-8b17-4939653c7e45",
+    "libro": null,
+    "libro_nombre": "Obra Perf 39",
+    "autor_nombre": "Autor Perf",
+    "editorial_nombre": "Editorial Perf",
+    "genero_nombre": "Genero Perf",
+    "isbn": "9780000000039",
+    "idioma": "es",
+    "unit_price": "10000",
+    "quantity": 1,
+    "subtotal": "10000",
+    "sold_at": "2026-04-26T14:55:03.888Z",
+    "metadata_snapshot": {
+      "isbn": "9780000000039",
+      "obra": {
+        "id": 96,
+        "autor": "Autor Perf",
+        "genero": "Genero Perf",
+        "titulo": "Obra Perf 39"
+      },
+      "idioma": "es",
+      "libro_id": 46,
+      "editorial": "Editorial Perf",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 2,
+  "fields": {
+    "venta": "a76deece-6241-4c42-a6b9-80d7a8df973c",
+    "libro": null,
+    "libro_nombre": "Obra Perf 39",
+    "autor_nombre": "Autor Perf",
+    "editorial_nombre": "Editorial Perf",
+    "genero_nombre": "Genero Perf",
+    "isbn": "9780000000039",
+    "idioma": "es",
+    "unit_price": "10000",
+    "quantity": 1,
+    "subtotal": "10000",
+    "sold_at": "2026-04-26T15:00:27.601Z",
+    "metadata_snapshot": {
+      "isbn": "9780000000039",
+      "obra": {
+        "id": 96,
+        "autor": "Autor Perf",
+        "genero": "Genero Perf",
+        "titulo": "Obra Perf 39"
+      },
+      "idioma": "es",
+      "libro_id": 46,
+      "editorial": "Editorial Perf",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 3,
+  "fields": {
+    "venta": "4eebc112-6de0-435a-9f9c-9b0dc9b93215",
+    "libro": 86,
+    "libro_nombre": "A Game of Thrones",
+    "autor_nombre": "George R. R. Martin",
+    "editorial_nombre": "Bantam",
+    "genero_nombre": "Fantasia epica",
+    "isbn": "9780553593716",
+    "idioma": "en",
+    "unit_price": "24490",
+    "quantity": 1,
+    "subtotal": "24490",
+    "sold_at": "2026-04-26T17:02:53.724Z",
+    "metadata_snapshot": {
+      "isbn": "9780553593716",
+      "obra": {
+        "id": 136,
+        "autor": "George R. R. Martin",
+        "genero": "Fantasia epica",
+        "titulo": "A Game of Thrones"
+      },
+      "idioma": "en",
+      "libro_id": 86,
+      "editorial": "Bantam",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 4,
+  "fields": {
+    "venta": "2debb825-e8e2-482a-a9f8-6187f8ec2e2a",
+    "libro": 71,
+    "libro_nombre": "Jane Eyre",
+    "autor_nombre": "Charlotte Bronte",
+    "editorial_nombre": "Penguin Classics",
+    "genero_nombre": "Clasico",
+    "isbn": "9780142437209",
+    "idioma": "en",
+    "unit_price": "16990",
+    "quantity": 1,
+    "subtotal": "16990",
+    "sold_at": "2026-04-27T14:54:47.657Z",
+    "metadata_snapshot": {
+      "isbn": "9780142437209",
+      "obra": {
+        "id": 121,
+        "autor": "Charlotte Bronte",
+        "genero": "Clasico",
+        "titulo": "Jane Eyre"
+      },
+      "idioma": "en",
+      "libro_id": 71,
+      "editorial": "Penguin Classics",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 5,
+  "fields": {
+    "venta": "c9e20a39-fff8-43b8-8e04-bf7c03570411",
+    "libro": 86,
+    "libro_nombre": "A Game of Thrones",
+    "autor_nombre": "George R. R. Martin",
+    "editorial_nombre": "Bantam",
+    "genero_nombre": "Fantasia epica",
+    "isbn": "9780553593716",
+    "idioma": "en",
+    "unit_price": "24490",
+    "quantity": 1,
+    "subtotal": "24490",
+    "sold_at": "2026-04-27T18:31:15.507Z",
+    "metadata_snapshot": {
+      "isbn": "9780553593716",
+      "obra": {
+        "id": 136,
+        "autor": "George R. R. Martin",
+        "genero": "Fantasia epica",
+        "titulo": "A Game of Thrones"
+      },
+      "idioma": "en",
+      "libro_id": 86,
+      "editorial": "Bantam",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 6,
+  "fields": {
+    "venta": "8a9bc2ba-309d-4225-acbb-e3c95b592a6e",
+    "libro": 86,
+    "libro_nombre": "A Game of Thrones",
+    "autor_nombre": "George R. R. Martin",
+    "editorial_nombre": "Bantam",
+    "genero_nombre": "Fantasia epica",
+    "isbn": "9780553593716",
+    "idioma": "en",
+    "unit_price": "24490",
+    "quantity": 1,
+    "subtotal": "24490",
+    "sold_at": "2026-04-27T23:47:36.234Z",
+    "metadata_snapshot": {
+      "isbn": "9780553593716",
+      "obra": {
+        "id": 136,
+        "autor": "George R. R. Martin",
+        "genero": "Fantasia epica",
+        "titulo": "A Game of Thrones"
+      },
+      "idioma": "en",
+      "libro_id": 86,
+      "editorial": "Bantam",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 7,
+  "fields": {
+    "venta": "baae2529-3938-40f4-89c5-8668524f038a",
+    "libro": 87,
+    "libro_nombre": "The Name of the Wind",
+    "autor_nombre": "Patrick Rothfuss",
+    "editorial_nombre": "DAW",
+    "genero_nombre": "Fantasia",
+    "isbn": "9780756404741",
+    "idioma": "en",
+    "unit_price": "24990",
+    "quantity": 1,
+    "subtotal": "24990",
+    "sold_at": "2026-04-28T00:00:00.685Z",
+    "metadata_snapshot": {
+      "isbn": "9780756404741",
+      "obra": {
+        "id": 137,
+        "autor": "Patrick Rothfuss",
+        "genero": "Fantasia",
+        "titulo": "The Name of the Wind"
+      },
+      "idioma": "en",
+      "libro_id": 87,
+      "editorial": "DAW",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 8,
+  "fields": {
+    "venta": "41331f97-d242-409d-bd80-a04230d98ef6",
+    "libro": 85,
+    "libro_nombre": "Harry Potter and the Prisoner of Azkaban",
+    "autor_nombre": "J. K. Rowling",
+    "editorial_nombre": "Scholastic",
+    "genero_nombre": "Fantasia juvenil",
+    "isbn": "9780439136365",
+    "idioma": "en",
+    "unit_price": "23990",
+    "quantity": 1,
+    "subtotal": "23990",
+    "sold_at": "2026-04-28T16:01:21.126Z",
+    "metadata_snapshot": {
+      "isbn": "9780439136365",
+      "obra": {
+        "id": 135,
+        "autor": "J. K. Rowling",
+        "genero": "Fantasia juvenil",
+        "titulo": "Harry Potter and the Prisoner of Azkaban"
+      },
+      "idioma": "en",
+      "libro_id": 85,
+      "editorial": "Scholastic",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+},
+{
+  "model": "ventas.ventaitem",
+  "pk": 9,
+  "fields": {
+    "venta": "62ad6863-74c4-4a0c-b2b2-115265249be5",
+    "libro": 86,
+    "libro_nombre": "A Game of Thrones",
+    "autor_nombre": "George R. R. Martin",
+    "editorial_nombre": "Bantam",
+    "genero_nombre": "Fantasia epica",
+    "isbn": "9780553593716",
+    "idioma": "en",
+    "unit_price": "24490",
+    "quantity": 1,
+    "subtotal": "24490",
+    "sold_at": "2026-04-30T18:09:33.559Z",
+    "metadata_snapshot": {
+      "isbn": "9780553593716",
+      "obra": {
+        "id": 136,
+        "autor": "George R. R. Martin",
+        "genero": "Fantasia epica",
+        "titulo": "A Game of Thrones"
+      },
+      "idioma": "en",
+      "libro_id": 86,
+      "editorial": "Bantam",
+      "tipo_tapa": "BLANDA"
+    }
+  }
+}
+]
