@@ -81,6 +81,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'payments.middleware.PaymentsExceptionRescueMiddleware',
+    'payments.middleware.ApiExceptionDiagnosticMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -175,10 +176,28 @@ CORS_ALLOW_CREDENTIALS = os.getenv("CORS_ALLOW_CREDENTIALS", "True").lower() == 
 _cors_allowed_origins = os.getenv("CORS_ALLOWED_ORIGINS", "")
 if _cors_allowed_origins:
     CORS_ALLOWED_ORIGINS = [origin.strip() for origin in _cors_allowed_origins.split(",") if origin.strip()]
+elif not IS_PRODUCTION:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:4173",
+        "http://127.0.0.1:4173",
+    ]
 
 _csrf_trusted_origins = os.getenv("CSRF_TRUSTED_ORIGINS", "")
 if _csrf_trusted_origins:
     CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_trusted_origins.split(",") if origin.strip()]
+elif not IS_PRODUCTION:
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:4173",
+        "http://127.0.0.1:4173",
+    ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "idempotency-key",
@@ -230,7 +249,10 @@ AUTH_REFRESH_COOKIE_SECURE = os.getenv(
     "AUTH_REFRESH_COOKIE_SECURE",
     "true" if IS_PRODUCTION else "false",
 ).lower() == "true"
-AUTH_REFRESH_COOKIE_SAMESITE = os.getenv("AUTH_REFRESH_COOKIE_SAMESITE", "Lax")
+AUTH_REFRESH_COOKIE_SAMESITE = os.getenv(
+    "AUTH_REFRESH_COOKIE_SAMESITE",
+    "None" if IS_PRODUCTION else "Lax",
+)
 AUTH_REFRESH_COOKIE_PATH = os.getenv("AUTH_REFRESH_COOKIE_PATH", "/auth/jwt/")
 
 # Los precios del catálogo ya incluyen IVA, por lo que no se debe recargar en checkout.
@@ -260,6 +282,14 @@ if IS_PRODUCTION and not PAYMENTS_WEBHOOK_SECRET:
 
 CSRF_COOKIE_SECURE = IS_PRODUCTION
 SESSION_COOKIE_SECURE = IS_PRODUCTION
+CSRF_COOKIE_SAMESITE = os.getenv(
+    "CSRF_COOKIE_SAMESITE",
+    "None" if IS_PRODUCTION else "Lax",
+)
+SESSION_COOKIE_SAMESITE = os.getenv(
+    "SESSION_COOKIE_SAMESITE",
+    "None" if IS_PRODUCTION else "Lax",
+)
 SECURE_SSL_REDIRECT = os.getenv(
     "SECURE_SSL_REDIRECT",
     "true" if IS_PRODUCTION else "false",
