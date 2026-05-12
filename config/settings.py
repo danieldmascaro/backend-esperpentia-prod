@@ -173,26 +173,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False").lower() == "true"
 CORS_ALLOW_CREDENTIALS = os.getenv("CORS_ALLOW_CREDENTIALS", "True").lower() == "true"
 
-DEFAULT_ALLOWED_ORIGINS = [
-    "https://esperpentia.vercel.app",
-    "https://esperpentia-frontend-6aur.vercel.app",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
-    "http://localhost:4173",
-    "http://127.0.0.1:4173",
+_env_cors_allowed_origins = os.getenv("CORS_ALLOWED_ORIGINS", "")
+_env_csrf_trusted_origins = os.getenv("CSRF_TRUSTED_ORIGINS", "")
+
+CORS_ALLOWED_ORIGINS = [
+    item.strip() for item in _env_cors_allowed_origins.split(",") if item.strip()
 ]
 
-def _csv_values(name):
-    return [item.strip() for item in os.getenv(name, "").split(",") if item.strip()]
-
-def _values_or_default(name, default_values):
-    values = _csv_values(name)
-    return values if values else default_values
-
-CORS_ALLOWED_ORIGINS = _values_or_default("CORS_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS)
-CSRF_TRUSTED_ORIGINS = _values_or_default("CSRF_TRUSTED_ORIGINS", DEFAULT_ALLOWED_ORIGINS)
+CSRF_TRUSTED_ORIGINS = [
+    item.strip() for item in _env_csrf_trusted_origins.split(",") if item.strip()
+]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "idempotency-key",
