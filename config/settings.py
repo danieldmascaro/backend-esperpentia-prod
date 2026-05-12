@@ -259,8 +259,24 @@ CHECKOUT_TAX_RATE = os.getenv("CHECKOUT_TAX_RATE", "0.19")
 WEBPAY_COMMERCE_CODE = os.getenv("WEBPAY_COMMERCE_CODE", "597055555532")
 WEBPAY_API_KEY = os.getenv("WEBPAY_API_KEY", "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C")
 WEBPAY_ENVIRONMENT = os.getenv("WEBPAY_ENVIRONMENT", "").strip().upper()
-WEBPAY_RETURN_URL = os.getenv("WEBPAY_RETURN_URL", "http://localhost:8000/payments/webpay/return/")
-WEBPAY_FRONTEND_RESULT_URL = os.getenv("WEBPAY_FRONTEND_RESULT_URL", "http://localhost:5173/checkout/resultado")
+BACKEND_PUBLIC_URL = os.getenv("BACKEND_PUBLIC_URL", "").strip().rstrip("/")
+FRONTEND_PUBLIC_URL = os.getenv("FRONTEND_PUBLIC_URL", "").strip().rstrip("/")
+_default_backend_public_url = (
+    BACKEND_PUBLIC_URL
+    or ("https://backend-esperpentia-prod.onrender.com" if IS_PUBLIC_HTTPS_DEPLOYMENT else "http://localhost:8000")
+)
+_default_frontend_public_url = (
+    FRONTEND_PUBLIC_URL
+    or ("https://esperpentia-frontend-6aur.vercel.app" if IS_PUBLIC_HTTPS_DEPLOYMENT else "http://localhost:5173")
+)
+WEBPAY_RETURN_URL = os.getenv(
+    "WEBPAY_RETURN_URL",
+    f"{_default_backend_public_url}/payments/webpay/return/",
+)
+WEBPAY_FRONTEND_RESULT_URL = os.getenv(
+    "WEBPAY_FRONTEND_RESULT_URL",
+    f"{_default_frontend_public_url}/checkout/resultado",
+)
 PAYMENTS_WEBHOOK_SECRET = os.getenv("PAYMENTS_WEBHOOK_SECRET", "")
 
 if IS_PRODUCTION and SECRET_KEY == _DEFAULT_SECRET_KEY:
