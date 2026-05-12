@@ -184,6 +184,10 @@ CSRF_TRUSTED_ORIGINS = [
     item.strip() for item in _env_csrf_trusted_origins.split(",") if item.strip()
 ]
 
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "idempotency-key",
     "x-guest-token",
