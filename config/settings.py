@@ -236,7 +236,7 @@ SIMPLE_JWT = {
         minutes=int(os.getenv("JWT_ACCESS_TOKEN_MINUTES", "15"))
     ),
     "REFRESH_TOKEN_LIFETIME": timedelta(
-        days=int(os.getenv("JWT_REFRESH_TOKEN_DAYS", "7"))
+        days=int(os.getenv("JWT_REFRESH_TOKEN_DAYS", "30"))
     ),
     "ROTATE_REFRESH_TOKENS": os.getenv("JWT_ROTATE_REFRESH_TOKENS", "true").lower() == "true",
     "BLACKLIST_AFTER_ROTATION": os.getenv("JWT_BLACKLIST_AFTER_ROTATION", "true").lower() == "true",
@@ -245,11 +245,11 @@ SIMPLE_JWT = {
 AUTH_REFRESH_COOKIE_NAME = os.getenv("AUTH_REFRESH_COOKIE_NAME", "refresh_token")
 AUTH_REFRESH_COOKIE_SECURE = os.getenv(
     "AUTH_REFRESH_COOKIE_SECURE",
-    "true" if IS_PUBLIC_HTTPS_DEPLOYMENT else "false",
+    "true",
 ).lower() == "true"
 AUTH_REFRESH_COOKIE_SAMESITE = os.getenv(
     "AUTH_REFRESH_COOKIE_SAMESITE",
-    "None" if IS_PUBLIC_HTTPS_DEPLOYMENT else "Lax",
+    "None",
 )
 AUTH_REFRESH_COOKIE_PATH = os.getenv("AUTH_REFRESH_COOKIE_PATH", "/")
 
