@@ -173,44 +173,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False").lower() == "true"
 CORS_ALLOW_CREDENTIALS = os.getenv("CORS_ALLOW_CREDENTIALS", "True").lower() == "true"
 
-_cors_allowed_origins = os.getenv("CORS_ALLOWED_ORIGINS", "")
-if _cors_allowed_origins:
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in _cors_allowed_origins.split(",") if origin.strip()]
-elif not IS_PRODUCTION:
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
-        "http://localhost:4173",
-        "http://127.0.0.1:4173",
-    ]
+DEFAULT_ALLOWED_ORIGINS = [
+    "https://esperpentia.vercel.app",
+    "https://esperpentia-frontend-6aur.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173",
+]
 
-_cors_allowed_origin_regexes = os.getenv("CORS_ALLOWED_ORIGIN_REGEXES", "")
-if _cors_allowed_origin_regexes:
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        pattern.strip() for pattern in _cors_allowed_origin_regexes.split(",") if pattern.strip()
-    ]
-elif IS_PRODUCTION:
-    # Permite dominios preview de Vercel sin abrir CORS a cualquier origen.
-    CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\.vercel\.app$"]
+def _csv_values(name):
+    return [item.strip() for item in os.getenv(name, "").split(",") if item.strip()]
 
-_csrf_trusted_origins = os.getenv("CSRF_TRUSTED_ORIGINS", "")
-if _csrf_trusted_origins:
-    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_trusted_origins.split(",") if origin.strip()]
-elif not IS_PRODUCTION:
-    CSRF_TRUSTED_ORIGINS = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
-        "http://localhost:4173",
-        "http://127.0.0.1:4173",
-    ]
-else:
-    CSRF_TRUSTED_ORIGINS = [
-        "https://*.vercel.app",
-    ]
+def _values_or_default(name, default_values):
+    values = _csv_values(name)
+    return values if values else default_values
+
+CORS_ALLOWED_ORIGINS = _values_or_default("CORS_ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS)
+CSRF_TRUSTED_ORIGINS = _values_or_default("CSRF_TRUSTED_ORIGINS", DEFAULT_ALLOWED_ORIGINS)
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "idempotency-key",
@@ -293,12 +275,10 @@ if IS_PRODUCTION and WEBPAY_ENVIRONMENT == "LIVE" and (
 if IS_PRODUCTION and not PAYMENTS_WEBHOOK_SECRET:
     raise ImproperlyConfigured("PAYMENTS_WEBHOOK_SECRET debe configurarse en produccion.")
 
-CSRF_COOKIE_SECURE = IS_PRODUCTION
-SESSION_COOKIE_SECURE = IS_PRODUCTION
-CSRF_COOKIE_SAMESITE = os.getenv(
-    "CSRF_COOKIE_SAMESITE",
-    "None" if IS_PRODUCTION else "Lax",
-)
+SESSION_COOKIE_SECURE = os.getenv(
+    "SESSION_COOKIE_SECURE",
+    "true" if IS_PRODUCTION else "false",
+).lower() == "true"
 SESSION_COOKIE_SAMESITE = os.getenv(
     "SESSION_COOKIE_SAMESITE",
     "None" if IS_PRODUCTION else "Lax",
