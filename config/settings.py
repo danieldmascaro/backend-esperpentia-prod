@@ -184,9 +184,14 @@ CSRF_TRUSTED_ORIGINS = [
     item.strip() for item in _env_csrf_trusted_origins.split(",") if item.strip()
 ]
 
-CSRF_COOKIE_SECURE = True
-
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = os.getenv(
+    "CSRF_COOKIE_SECURE",
+    "true" if IS_PRODUCTION else "false",
+).lower() == "true"
+CSRF_COOKIE_SAMESITE = os.getenv(
+    "CSRF_COOKIE_SAMESITE",
+    "None" if IS_PRODUCTION else "Lax",
+)
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "idempotency-key",
