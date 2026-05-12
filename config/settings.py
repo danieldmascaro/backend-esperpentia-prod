@@ -251,7 +251,7 @@ AUTH_REFRESH_COOKIE_SAMESITE = os.getenv(
     "AUTH_REFRESH_COOKIE_SAMESITE",
     "None" if IS_PUBLIC_HTTPS_DEPLOYMENT else "Lax",
 )
-AUTH_REFRESH_COOKIE_PATH = os.getenv("AUTH_REFRESH_COOKIE_PATH", "/auth/jwt/")
+AUTH_REFRESH_COOKIE_PATH = os.getenv("AUTH_REFRESH_COOKIE_PATH", "/")
 
 # Los precios del catálogo ya incluyen IVA, por lo que no se debe recargar en checkout.
 CHECKOUT_APPLY_TAX = False

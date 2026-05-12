@@ -1,6 +1,7 @@
 from decimal import Decimal
 from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import override_settings
 from rest_framework import status
@@ -443,6 +444,7 @@ class BackendEndpointsV2Tests(APITestCase):
             HTTP_X_CSRFTOKEN=csrf_token,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.cookies[settings.AUTH_REFRESH_COOKIE_NAME]["path"], "/")
 
         response = strict_client.post("/auth/jwt/refresh/", format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
