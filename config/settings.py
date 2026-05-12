@@ -186,6 +186,15 @@ elif not IS_PRODUCTION:
         "http://127.0.0.1:4173",
     ]
 
+_cors_allowed_origin_regexes = os.getenv("CORS_ALLOWED_ORIGIN_REGEXES", "")
+if _cors_allowed_origin_regexes:
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        pattern.strip() for pattern in _cors_allowed_origin_regexes.split(",") if pattern.strip()
+    ]
+elif IS_PRODUCTION:
+    # Permite dominios preview de Vercel sin abrir CORS a cualquier origen.
+    CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\.vercel\.app$"]
+
 _csrf_trusted_origins = os.getenv("CSRF_TRUSTED_ORIGINS", "")
 if _csrf_trusted_origins:
     CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_trusted_origins.split(",") if origin.strip()]
@@ -197,6 +206,10 @@ elif not IS_PRODUCTION:
         "http://127.0.0.1:5174",
         "http://localhost:4173",
         "http://127.0.0.1:4173",
+    ]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        "https://*.vercel.app",
     ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -292,6 +305,11 @@ SESSION_COOKIE_SAMESITE = os.getenv(
 )
 SECURE_SSL_REDIRECT = os.getenv(
     "SECURE_SSL_REDIRECT",
+    "true" if IS_PRODUCTION else "false",
+).lower() == "true"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = os.getenv(
+    "USE_X_FORWARDED_HOST",
     "true" if IS_PRODUCTION else "false",
 ).lower() == "true"
 SECURE_HSTS_SECONDS = int(
