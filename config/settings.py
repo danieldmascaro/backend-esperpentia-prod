@@ -34,6 +34,10 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", _DEFAULT_SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 IS_PRODUCTION = os.getenv("DJANGO_ENV", "development").strip().lower() == "production"
+IS_PUBLIC_HTTPS_DEPLOYMENT = os.getenv(
+    "DJANGO_PUBLIC_HTTPS",
+    "true" if IS_PRODUCTION else "false",
+).lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -186,11 +190,11 @@ CSRF_TRUSTED_ORIGINS = [
 
 CSRF_COOKIE_SECURE = os.getenv(
     "CSRF_COOKIE_SECURE",
-    "true" if IS_PRODUCTION else "false",
+    "true" if IS_PUBLIC_HTTPS_DEPLOYMENT else "false",
 ).lower() == "true"
 CSRF_COOKIE_SAMESITE = os.getenv(
     "CSRF_COOKIE_SAMESITE",
-    "None" if IS_PRODUCTION else "Lax",
+    "None" if IS_PUBLIC_HTTPS_DEPLOYMENT else "Lax",
 )
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -241,11 +245,11 @@ SIMPLE_JWT = {
 AUTH_REFRESH_COOKIE_NAME = os.getenv("AUTH_REFRESH_COOKIE_NAME", "refresh_token")
 AUTH_REFRESH_COOKIE_SECURE = os.getenv(
     "AUTH_REFRESH_COOKIE_SECURE",
-    "true" if IS_PRODUCTION else "false",
+    "true" if IS_PUBLIC_HTTPS_DEPLOYMENT else "false",
 ).lower() == "true"
 AUTH_REFRESH_COOKIE_SAMESITE = os.getenv(
     "AUTH_REFRESH_COOKIE_SAMESITE",
-    "None" if IS_PRODUCTION else "Lax",
+    "None" if IS_PUBLIC_HTTPS_DEPLOYMENT else "Lax",
 )
 AUTH_REFRESH_COOKIE_PATH = os.getenv("AUTH_REFRESH_COOKIE_PATH", "/auth/jwt/")
 
@@ -276,11 +280,11 @@ if IS_PRODUCTION and not PAYMENTS_WEBHOOK_SECRET:
 
 SESSION_COOKIE_SECURE = os.getenv(
     "SESSION_COOKIE_SECURE",
-    "true" if IS_PRODUCTION else "false",
+    "true" if IS_PUBLIC_HTTPS_DEPLOYMENT else "false",
 ).lower() == "true"
 SESSION_COOKIE_SAMESITE = os.getenv(
     "SESSION_COOKIE_SAMESITE",
-    "None" if IS_PRODUCTION else "Lax",
+    "None" if IS_PUBLIC_HTTPS_DEPLOYMENT else "Lax",
 )
 SECURE_SSL_REDIRECT = os.getenv(
     "SECURE_SSL_REDIRECT",
