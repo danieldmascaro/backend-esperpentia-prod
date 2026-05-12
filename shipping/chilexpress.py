@@ -13,6 +13,10 @@ CHILEXPRESS_COVERAGE_API_KEY = os.getenv(
     "CHILEXPRESS_API_COBERTURA_KEY",
     os.getenv("VITE_CHILEXPRESS_API_COBERTURA_KEY", ""),
 )
+CHILEXPRESS_RATES_API_KEY = os.getenv(
+    "CHILEXPRESS_API_COTIZADOR_KEY",
+    os.getenv("VITE_CHILEXPRESS_API_COTIZADOR_KEY", ""),
+)
 
 
 class ChilexpressApiError(Exception):
@@ -66,7 +70,7 @@ def search_chilexpress_streets(
     )
 
     try:
-        with urllib_request.urlopen(req, timeout=20) as response:
+        with urllib_request.urlopen(req, timeout=30) as response:
             body = response.read().decode("utf-8", errors="replace")
             data = _load_response_body(body)
             return {
@@ -82,4 +86,65 @@ def search_chilexpress_streets(
         raise ChilexpressApiError(description) from exc
     except urllib_error.URLError as exc:
         raise ChilexpressApiError(f"No se pudo conectar con Chilexpress: {exc.reason}") from exc
+    except Exception as exc:
+        raise ChilexpressApiError(f"Error inesperado conectando con Chilexpress: {type(exc).__name__} - {str(exc)}") from exc
 
+
+def quote_chilexpress_rate(
+    *,
+    origin_county_code,
+    destination_county_code,
+    package,
+    product_type,
+    content_type,
+    declared_worth,
+    delivery_time,
+):
+    api_key = CHILEXPRESS_RATES_API_KEY.strip()
+    if not api_key:
+        raise ChilexpressApiError(
+            "Falta configurar CHILEXPRESS_API_COTIZADOR_KEY para cotizar en Chilexpress."
+        )
+
+    path = "/rating/api/v1.0/rates/courier"
+    url = f"{CHILEXPRESS_API_BASE_URL}{path}"
+    payload = json.dumps(
+        {
+            "originCountyCode": origin_county_code,
+            "destinationCountyCode": destination_county_code,
+            "package": package,
+            "productType": product_type,
+            "contentType": content_type,
+            "declaredWorth": declared_worth,
+            "deliveryTime": delivery_time,
+        }
+    ).encode("utf-8")
+    req = urllib_request.Request(
+        url,
+        data=payload,
+        method="POST",
+        headers={
+            "Content-Type": "application/json",
+            "Ocp-Apim-Subscription-Key": api_key,
+        },
+    )
+
+    try:
+        with urllib_request.urlopen(req, timeout=30) as response:
+            body = response.read().decode("utf-8", errors="replace")
+            data = _load_response_body(body)
+            return {
+                "status_code": response.status,
+                "status_description": data.get("statusDescription"),
+                "options": (data.get("data") or {}).get("courierServiceOptions") or [],
+                "raw": data,
+            }
+    except urllib_error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        data = _load_response_body(body)
+        description = data.get("statusDescription") or f"HTTP {exc.code}"
+        raise ChilexpressApiError(description) from exc
+    except urllib_error.URLError as exc:
+        raise ChilexpressApiError(f"No se pudo conectar con Chilexpress: {exc.reason}") from exc
+    except Exception as exc:
+        raise ChilexpressApiError(f"Error inesperado conectando con Chilexpress: {type(exc).__name__} - {str(exc)}") from exc
