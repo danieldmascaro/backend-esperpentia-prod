@@ -14,7 +14,21 @@ class Order(models.Model):
         CANCELLED = "cancelled", "Cancelled"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    sale = models.OneToOneField("ventas.Venta", related_name="order", on_delete=models.PROTECT)
+    sale = models.OneToOneField(
+        "ventas.Venta",
+        related_name="order",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+    cart = models.OneToOneField(
+        "checkout.Cart",
+        related_name="order",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+    checkout_contact_payload = models.JSONField(default=dict, blank=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="orders",

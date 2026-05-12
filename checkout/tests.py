@@ -88,8 +88,8 @@ class CheckoutApiTests(TestCase):
         )
         self.assertEqual(second_response.status_code, status.HTTP_200_OK)
         self.assertEqual(second_response.data, first_response.data)
-        self.assertEqual(Venta.objects.filter(cart_id=cart_id).count(), 1)
-        self.assertEqual(Order.objects.filter(sale__cart_id=cart_id).count(), 1)
+        self.assertEqual(Venta.objects.filter(cart_id=cart_id).count(), 0)
+        self.assertEqual(Order.objects.filter(cart_id=cart_id).count(), 1)
 
     def test_apply_discount_requires_backend_coupon(self):
         guest_token = "guest-discount-check"

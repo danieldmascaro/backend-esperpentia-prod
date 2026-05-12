@@ -214,7 +214,7 @@ class CartViewSet(viewsets.GenericViewSet):
         payload = {
             "cart": CartSerializer(cart).data,
             "order_id": str(order.id),
-            "sale_id": str(order.sale_id),
+            "sale_id": str(order.sale_id) if order.sale_id else None,
             "order_status": order.status,
         }
         store_idempotent_payload(cart, "convert", idempotency_key, payload)

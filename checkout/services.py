@@ -6,10 +6,9 @@ from django.db import transaction
 from django.db.models import F, Sum
 from django.utils import timezone
 
-from inventory.services import assert_stock_available, consume_reserved_stock, reserve_stock
-from orders.services import create_order_from_sale
+from inventory.services import assert_stock_available, reserve_stock
+from orders.services import create_order_from_cart
 from productos.models import Libro
-from ventas.services import create_sale_from_cart
 from .models import (
     Cart,
     CartDiscount,
@@ -344,10 +343,8 @@ def convert_cart_to_order(cart_id, contact_data=None):
     # Procesar items ya precargados sin hacer queries adicionales
     for item in items:
         reserve_stock(item.book, item.quantity)
-        consume_reserved_stock(item.book, item.quantity)
 
-    sale = create_sale_from_cart(cart, contact_data=contact_data)
-    order = create_order_from_sale(sale)
+    order = create_order_from_cart(cart, contact_data=contact_data)
     
     # Actualizar estado del carrito
     cart.status = Cart.Status.CONVERTED

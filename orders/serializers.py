@@ -4,7 +4,10 @@ from .models import Order
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    sale_id = serializers.UUIDField(source="sale.id", read_only=True)
+    sale_id = serializers.SerializerMethodField()
+
+    def get_sale_id(self, obj):
+        return str(obj.sale_id) if obj.sale_id else None
 
     class Meta:
         model = Order

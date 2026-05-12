@@ -4,12 +4,14 @@ import logging
 from django.conf import settings
 from django.db import transaction
 
+from inventory.services import consume_reserved_stock, release_stock
 from orders.models import Order
 from transbank.common.integration_type import IntegrationType
 from transbank.common.integration_api_keys import IntegrationApiKeys
 from transbank.common.integration_commerce_codes import IntegrationCommerceCodes
 from transbank.common.options import WebpayOptions
 from transbank.webpay.webpay_plus.transaction import Transaction
+from ventas.services import create_sale_from_cart
 from ventas.services import sync_sale_status_from_payment
 
 from .models import Payment
@@ -159,7 +161,12 @@ def commit_webpay_transaction(token):
     except Exception as exc:
         raise PaymentIntegrationError(f"Error al confirmar transaccion Webpay: {exc}")
 
-    payment = Payment.objects.select_for_update().select_related("order").filter(provider="webpay", provider_reference=token).first()
+    payment = (
+        Payment.objects.select_for_update()
+        .select_related("order", "order__cart")
+        .filter(provider="webpay", provider_reference=token)
+        .first()
+    )
     if not payment:
         raise PaymentIntegrationError("No existe un pago Webpay asociado al token.")
 
@@ -171,8 +178,24 @@ def commit_webpay_transaction(token):
     payment.status = next_status
     payment.save(update_fields=["status", "updated_at"])
 
+    order = payment.order
+    cart = getattr(order, "cart", None)
+
+    if cart:
+        cart_items = list(cart.items.select_related("book").all())
+        if is_success:
+            if not order.sale_id:
+                for item in cart_items:
+                    consume_reserved_stock(item.book, item.quantity)
+                sale = create_sale_from_cart(cart, contact_data=order.checkout_contact_payload)
+                order.sale = sale
+                order.save(update_fields=["sale", "updated_at"])
+        else:
+            for item in cart_items:
+                release_stock(item.book, item.quantity)
+
     try:
-        _sync_order_status_from_payment(payment.order, payment.status)
+        _sync_order_status_from_payment(order, payment.status)
         sync_sale_status_from_payment(payment)
     except Exception as exc:
         logger.exception("Error sincronizando estado de orden/venta para token Webpay %s", token)

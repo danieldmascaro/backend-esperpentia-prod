@@ -56,7 +56,9 @@ def sync_sale_status_from_order(order):
 
 
 def sync_sale_status_from_payment(payment):
-    sale = payment.order.sale
+    sale = getattr(payment.order, "sale", None)
+    if sale is None:
+        return None
     if payment.status == "refunded":
         return sync_sale_status(sale, Venta.Status.REFUNDED)
     if payment.status == "failed":
