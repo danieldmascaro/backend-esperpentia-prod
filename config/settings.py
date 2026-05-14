@@ -261,22 +261,15 @@ WEBPAY_API_KEY = os.getenv("WEBPAY_API_KEY", "579B532A7440BB0C9079DED94D31EA1615
 WEBPAY_ENVIRONMENT = os.getenv("WEBPAY_ENVIRONMENT", "").strip().upper()
 BACKEND_PUBLIC_URL = os.getenv("BACKEND_PUBLIC_URL", "").strip().rstrip("/")
 FRONTEND_PUBLIC_URL = os.getenv("FRONTEND_PUBLIC_URL", "").strip().rstrip("/")
-_default_backend_public_url = (
-    BACKEND_PUBLIC_URL
-    or ("https://backend-esperpentia-prod.onrender.com" if IS_PUBLIC_HTTPS_DEPLOYMENT else "http://localhost:8000")
-)
 _default_frontend_public_url = (
     FRONTEND_PUBLIC_URL
     or ("https://esperpentia-frontend-6aur.vercel.app" if IS_PUBLIC_HTTPS_DEPLOYMENT else "http://localhost:5173")
 )
-WEBPAY_RETURN_URL = os.getenv(
-    "WEBPAY_RETURN_URL",
-    f"{_default_backend_public_url}/payments/webpay/return/",
-)
+WEBPAY_RETURN_URL = os.getenv("WEBPAY_RETURN_URL", "").strip()
 WEBPAY_FRONTEND_RESULT_URL = os.getenv(
     "WEBPAY_FRONTEND_RESULT_URL",
     f"{_default_frontend_public_url}/checkout/resultado",
-)
+).strip()
 PAYMENTS_WEBHOOK_SECRET = os.getenv("PAYMENTS_WEBHOOK_SECRET", "")
 
 if IS_PRODUCTION and SECRET_KEY == _DEFAULT_SECRET_KEY:
@@ -290,6 +283,9 @@ if IS_PRODUCTION and WEBPAY_ENVIRONMENT == "LIVE" and (
     raise ImproperlyConfigured(
         "Las credenciales de Webpay LIVE deben configurarse en produccion."
     )
+
+if IS_PRODUCTION and not WEBPAY_RETURN_URL:
+    raise ImproperlyConfigured("WEBPAY_RETURN_URL debe configurarse en produccion.")
 
 if IS_PRODUCTION and not PAYMENTS_WEBHOOK_SECRET:
     raise ImproperlyConfigured("PAYMENTS_WEBHOOK_SECRET debe configurarse en produccion.")

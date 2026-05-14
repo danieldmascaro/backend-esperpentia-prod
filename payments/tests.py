@@ -10,7 +10,7 @@ from rest_framework.test import APITestCase
 
 from orders.models import Order
 from payments.models import Payment
-from payments.services import PaymentIntegrationError
+from payments.services import PaymentIntegrationError, create_payment_intent
 from ventas.models import Venta
 
 
@@ -178,6 +178,64 @@ class GuestPaymentIntentTests(APITestCase):
             HTTP_X_GUEST_TOKEN="guest-token-incorrecto",
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class WebpayPaymentIntentServiceTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.sale = Venta.objects.create(
+            cart_id=uuid4(),
+            user=None,
+            status=Venta.Status.COMPLETED,
+            currency="CLP",
+            subtotal_amount=Decimal("10000"),
+            discount_amount=Decimal("0"),
+            tax_amount=Decimal("0"),
+            total_amount=Decimal("10000"),
+            items_count=1,
+            total_quantity=1,
+            sold_at=timezone.now(),
+        )
+        cls.order = Order.objects.create(
+            sale=cls.sale,
+            user=None,
+            status=Order.Status.PENDING,
+            currency="CLP",
+            subtotal_amount=cls.sale.subtotal_amount,
+            discount_amount=cls.sale.discount_amount,
+            tax_amount=cls.sale.tax_amount,
+            total_amount=cls.sale.total_amount,
+        )
+
+    @override_settings(WEBPAY_RETURN_URL="https://backend.example.com/payments/webpay/return/")
+    def test_webpay_intent_uses_configured_return_url(self):
+        configured_return_url = "https://backend.example.com/payments/webpay/return/"
+
+        with patch("payments.services._build_webpay_transaction") as mocked_builder:
+            mocked_tx = mocked_builder.return_value
+            mocked_tx.create.return_value = {
+                "token": "token-env-return-url",
+                "url": "https://webpay.example.com/initTransaction",
+            }
+
+            payload = create_payment_intent(self.order, provider="webpay")
+
+        mocked_tx.create.assert_called_once()
+        self.assertEqual(mocked_tx.create.call_args.kwargs["return_url"], configured_return_url)
+        self.assertEqual(payload["provider_reference"], "token-env-return-url")
+
+    @override_settings(WEBPAY_RETURN_URL="")
+    def test_webpay_intent_requires_return_url_setting(self):
+        with patch("payments.services._build_webpay_transaction") as mocked_builder:
+            with self.assertRaisesMessage(PaymentIntegrationError, "WEBPAY_RETURN_URL"):
+                create_payment_intent(self.order, provider="webpay")
+
+        mocked_builder.assert_not_called()
+
+    @override_settings(WEBPAY_RETURN_URL="/payments/webpay/return/")
+    def test_webpay_intent_rejects_relative_return_url(self):
+        with self.assertRaisesMessage(PaymentIntegrationError, "URL absoluta http(s)"):
+            create_payment_intent(self.order, provider="webpay")
 
 
 class WebpayReturnTests(APITestCase):

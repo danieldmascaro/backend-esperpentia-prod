@@ -1,5 +1,6 @@
 from uuid import uuid4
 import logging
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.db import transaction
@@ -77,6 +78,16 @@ def _build_webpay_transaction():
     return Transaction(options)
 
 
+def _get_webpay_return_url():
+    return_url = str(getattr(settings, "WEBPAY_RETURN_URL", "") or "").strip()
+    parsed_url = urlparse(return_url)
+    if not return_url or parsed_url.scheme not in {"http", "https"} or not parsed_url.netloc:
+        raise PaymentIntegrationError(
+            "WEBPAY_RETURN_URL debe configurarse como una URL absoluta http(s)."
+        )
+    return return_url
+
+
 def _sync_order_status_from_payment(order, payment_status):
     next_status = order.status
     if payment_status == Payment.Status.PAID:
@@ -95,12 +106,12 @@ def _sync_order_status_from_payment(order, payment_status):
 @transaction.atomic
 def create_payment_intent(order, provider="mockpay"):
     if provider == "webpay":
+        return_url = _get_webpay_return_url()
         tx = _build_webpay_transaction()
         _, integration_type = _get_webpay_options()
         buy_order = f"ORD{order.id.hex[:22]}"
         session_id = f"SES{order.id.hex[:22]}"
         amount = int(order.total_amount)
-        return_url = getattr(settings, "WEBPAY_RETURN_URL", "http://localhost:8000/payments/webpay/commit/")
 
         try:
             response = tx.create(buy_order=buy_order, session_id=session_id, amount=amount, return_url=return_url)
