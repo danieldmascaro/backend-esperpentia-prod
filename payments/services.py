@@ -78,6 +78,16 @@ def _build_webpay_transaction():
     return Transaction(options)
 
 
+def _is_webpay_authorized_response(response):
+    try:
+        response_code = int(response.get("response_code"))
+    except (TypeError, ValueError):
+        response_code = None
+
+    status_code = str(response.get("status", "")).upper()
+    return response_code == 0 and status_code == "AUTHORIZED"
+
+
 def _get_webpay_return_url():
     return_url = str(getattr(settings, "WEBPAY_RETURN_URL", "") or "").strip()
     parsed_url = urlparse(return_url)
@@ -137,6 +147,7 @@ def create_payment_intent(order, provider="mockpay"):
             "provider_reference": token,
             "token": token,
             "redirect_url": f"{url}?token_ws={token}",
+            "redirect_method": "POST",
             "webpay_url": url,
             "amount": str(payment.amount),
             "currency": payment.currency,
@@ -166,12 +177,6 @@ def create_payment_intent(order, provider="mockpay"):
 
 @transaction.atomic
 def commit_webpay_transaction(token):
-    tx = _build_webpay_transaction()
-    try:
-        response = tx.commit(token=token)
-    except Exception as exc:
-        raise PaymentIntegrationError(f"Error al confirmar transaccion Webpay: {exc}")
-
     payment = (
         Payment.objects.select_for_update()
         .select_related("order", "order__cart")
@@ -181,9 +186,20 @@ def commit_webpay_transaction(token):
     if not payment:
         raise PaymentIntegrationError("No existe un pago Webpay asociado al token.")
 
-    response_code = response.get("response_code")
-    status_code = str(response.get("status", "")).upper()
-    is_success = response_code == 0 and status_code == "AUTHORIZED"
+    if payment.status == Payment.Status.PAID:
+        return payment, {
+            "status": "AUTHORIZED",
+            "response_code": 0,
+            "already_committed": True,
+        }
+
+    tx = _build_webpay_transaction()
+    try:
+        response = tx.commit(token=token)
+    except Exception as exc:
+        raise PaymentIntegrationError(f"Error al confirmar transaccion Webpay: {exc}")
+
+    is_success = _is_webpay_authorized_response(response)
     next_status = Payment.Status.PAID if is_success else Payment.Status.FAILED
     _ensure_valid_payment_transition(payment, next_status)
     payment.status = next_status

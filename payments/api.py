@@ -113,7 +113,11 @@ class WebpayCommitAPIView(APIView):
     throttle_classes = [*api_settings.DEFAULT_THROTTLE_CLASSES, ScopedRateThrottle]
     throttle_scope = "payments_commit_public"
 
-    def post(self, request):
+    @staticmethod
+    def _is_json_request(request):
+        return "application/json" in (request.content_type or "").lower()
+
+    def _handle_api_commit(self, request):
         try:
             serializer = WebpayCommitSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -135,6 +139,15 @@ class WebpayCommitAPIView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+    def get(self, request):
+        return WebpayReturnAPIView()._handle_return(request)
+
+    def post(self, request):
+        if not self._is_json_request(request):
+            return WebpayReturnAPIView()._handle_return(request)
+
+        return self._handle_api_commit(request)
 
 
 class WebpayReturnAPIView(APIView):

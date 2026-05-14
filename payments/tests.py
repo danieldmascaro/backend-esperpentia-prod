@@ -10,7 +10,7 @@ from rest_framework.test import APITestCase
 
 from orders.models import Order
 from payments.models import Payment
-from payments.services import PaymentIntegrationError, create_payment_intent
+from payments.services import PaymentIntegrationError, commit_webpay_transaction, create_payment_intent
 from ventas.models import Venta
 
 
@@ -207,9 +207,9 @@ class WebpayPaymentIntentServiceTests(APITestCase):
             total_amount=cls.sale.total_amount,
         )
 
-    @override_settings(WEBPAY_RETURN_URL="https://backend.example.com/payments/webpay/return/")
+    @override_settings(WEBPAY_RETURN_URL="https://backend.example.com/payments/webpay/commit/")
     def test_webpay_intent_uses_configured_return_url(self):
-        configured_return_url = "https://backend.example.com/payments/webpay/return/"
+        configured_return_url = "https://backend.example.com/payments/webpay/commit/"
 
         with patch("payments.services._build_webpay_transaction") as mocked_builder:
             mocked_tx = mocked_builder.return_value
@@ -237,6 +237,43 @@ class WebpayPaymentIntentServiceTests(APITestCase):
         with self.assertRaisesMessage(PaymentIntegrationError, "URL absoluta http(s)"):
             create_payment_intent(self.order, provider="webpay")
 
+    def test_commit_accepts_string_zero_response_code(self):
+        payment = Payment.objects.create(
+            order=self.order,
+            provider="webpay",
+            status=Payment.Status.PENDING,
+            amount=self.order.total_amount,
+            currency=self.order.currency,
+            provider_reference="token-string-zero",
+        )
+
+        with patch("payments.services._build_webpay_transaction") as mocked_builder:
+            mocked_tx = mocked_builder.return_value
+            mocked_tx.commit.return_value = {"status": "AUTHORIZED", "response_code": "0"}
+
+            updated_payment, webpay_response = commit_webpay_transaction("token-string-zero")
+
+        payment.refresh_from_db()
+        self.assertEqual(updated_payment.status, Payment.Status.PAID)
+        self.assertEqual(payment.status, Payment.Status.PAID)
+        self.assertEqual(webpay_response["response_code"], "0")
+
+    def test_commit_is_idempotent_when_payment_is_already_paid(self):
+        Payment.objects.create(
+            order=self.order,
+            provider="webpay",
+            status=Payment.Status.PAID,
+            amount=self.order.total_amount,
+            currency=self.order.currency,
+            provider_reference="token-already-paid",
+        )
+
+        with patch("payments.services._build_webpay_transaction") as mocked_builder:
+            _, webpay_response = commit_webpay_transaction("token-already-paid")
+
+        mocked_builder.assert_not_called()
+        self.assertTrue(webpay_response["already_committed"])
+
 
 class WebpayReturnTests(APITestCase):
     def test_return_without_token_redirects_as_failed(self):
@@ -262,6 +299,75 @@ class WebpayReturnTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertIn("reason=payment_integration_error", response["Location"])
         self.assertIn("detail=", response["Location"])
+
+
+@override_settings(WEBPAY_FRONTEND_RESULT_URL="https://frontend.example.com/checkout/resultado")
+class WebpayCommitBrowserReturnTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.sale = Venta.objects.create(
+            cart_id=uuid4(),
+            user=None,
+            status=Venta.Status.COMPLETED,
+            currency="CLP",
+            subtotal_amount=Decimal("12000"),
+            discount_amount=Decimal("0"),
+            tax_amount=Decimal("0"),
+            total_amount=Decimal("12000"),
+            items_count=1,
+            total_quantity=1,
+            sold_at=timezone.now(),
+        )
+        cls.order = Order.objects.create(
+            sale=cls.sale,
+            user=None,
+            status=Order.Status.PAID,
+            currency="CLP",
+            subtotal_amount=cls.sale.subtotal_amount,
+            discount_amount=cls.sale.discount_amount,
+            tax_amount=cls.sale.tax_amount,
+            total_amount=cls.sale.total_amount,
+        )
+        cls.payment = Payment.objects.create(
+            order=cls.order,
+            provider="webpay",
+            status=Payment.Status.PAID,
+            amount=cls.order.total_amount,
+            currency=cls.order.currency,
+            provider_reference="token-browser-return",
+        )
+
+    def test_commit_get_redirects_to_frontend_after_commit(self):
+        with patch(
+            "payments.api.commit_webpay_transaction",
+            return_value=(self.payment, {"status": "AUTHORIZED", "response_code": 0}),
+        ) as mocked_commit:
+            response = self.client.get("/payments/webpay/commit/?token_ws=token-browser-return")
+
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertTrue(response["Location"].startswith("https://frontend.example.com/checkout/resultado?"))
+        self.assertIn("outcome=paid", response["Location"])
+        mocked_commit.assert_called_once_with("token-browser-return")
+
+    def test_commit_form_post_redirects_to_frontend_after_commit(self):
+        with patch(
+            "payments.api.commit_webpay_transaction",
+            return_value=(self.payment, {"status": "AUTHORIZED", "response_code": 0}),
+        ):
+            response = self.client.post(
+                "/payments/webpay/commit/",
+                {"token_ws": "token-browser-return"},
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertIn("outcome=paid", response["Location"])
+
+    def test_commit_browser_return_handles_aborted_payment(self):
+        response = self.client.get("/payments/webpay/commit/?TBK_TOKEN=token-browser-return")
+
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertIn("outcome=aborted", response["Location"])
+        self.assertIn("reason=payment_aborted_by_user", response["Location"])
 
 
 class WebpayCommitApiTests(APITestCase):

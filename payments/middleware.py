@@ -38,7 +38,11 @@ class PaymentsExceptionRescueMiddleware:
             path,
         )
 
-        if path.startswith("/payments/webpay/return"):
+        is_webpay_browser_return = path.startswith("/payments/webpay/return") or (
+            path.startswith("/payments/webpay/commit")
+            and "application/json" not in (request.content_type or "").lower()
+        )
+        if is_webpay_browser_return:
             base_url = getattr(
                 settings,
                 "WEBPAY_FRONTEND_RESULT_URL",
